@@ -14,7 +14,7 @@ telegraf_tags:
 telegraf_aws_tags: false
 telegraf_aws_tags_prefix:
 
-telegraf_agent_interval: 10s
+telegraf_agent_interval: 1s
 telegraf_round_interval: "true"
 telegraf_metric_batch_size: "1000"
 telegraf_metric_buffer_limit: "10000"
@@ -66,9 +66,6 @@ telegraf_plugins_base:
       exe: "influxd"
       prefix: "influxdb"
   - name: net
-    options:
-      interfaces:
-        - "eth0"
 
 telegraf_plugins: "{{ telegraf_plugins_base }} + {{ telegraf_plugins_extra | default([]) }}"
 
