@@ -2,6 +2,11 @@
 - include: install.yml
   tags: [telegraf, install]
 
+- include: nvmesh-plugin.yml
+  when: "'nvmesh' in group_names"
+
+- include: statscollection.yml
+
 - include: configure.yml
   tags: [telegraf, configure]
 

@@ -70,3 +70,13 @@ telegraf_plugins_base:
 telegraf_plugins: "{{ telegraf_plugins_base }} + {{ telegraf_plugins_extra | default([]) }}"
 
 telegraf_influxdata_base_url: "https://repos.influxdata.com"
+
+
+snmp_pkgs:
+  - snmp
+  - libsnmp-base
+
+metrics_pkgs:
+  - sysstat
+  - dstat
+  - ifstat
