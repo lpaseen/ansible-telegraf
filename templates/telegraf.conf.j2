@@ -172,6 +172,8 @@
 {% else %}
 {% if lv2_value == "true" or lv2_value == "false" or lv2_value is number %}
       {{ lv2_key }} = {{ lv2_value }}
+{% elif 'ALL' in lv2_key %}
+      "{{ lv2_key }}" = "{{ lv2_value }}"
 {% else %}
       {{ lv2_key }} = "{{ lv2_value }}"
 {% endif %}
