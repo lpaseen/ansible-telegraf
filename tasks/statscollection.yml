@@ -18,3 +18,16 @@
     - FROGFOOT-RESOURCES-MIB
     - UBNT-MIB
     - UBNT-UniFi-MIB
+
+- name: enable sysstat logging
+  lineinfile:
+    path: /etc/default/sysstat
+    regexp: '^ENABLED.*'
+    line: ENABLED="true"
+  notify: restart sysstat
+
+- name: Start sysstat service
+  service:
+    name: sysstat
+    enabled: yes
+    state: started

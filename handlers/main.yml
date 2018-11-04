@@ -28,3 +28,8 @@
     that:
       - "telegraf_service_status.rc == 0"
   when: telegraf_start_service
+
+- name: restart sysstat
+  service:
+    name: sysstat
+    state: restarted
