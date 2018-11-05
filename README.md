@@ -11,11 +11,8 @@ Prior knowledge/experience with InfluxDB and Telegraf is highly recommended. Ful
 Installation
 ------------
 
-Either clone this repository, or install through Ansible Galaxy directly using the command:
+Clone the repository into  your roles directory
 
-```
-ansible-galaxy install rossmcdonald.telegraf
-```
 
 Role Variables
 --------------
@@ -37,20 +34,5 @@ No other Ansible dependencies are required. This role was tested and developed w
 Example Playbook
 ----------------
 
-An example playbook is included in the `test.yml` file. There is also a `Vagrantfile`, which can be used for quick local testing leveraging [Vagrant](https://www.vagrantup.com/).
-
-Contributions and Feedback
---------------------------
-
-Any contributions are welcome. For any bugs or feature requests, please open an issue through Github.
-
-License
--------
-
-MIT
-
-Author
-------
-
-Created by [Ross McDonald](https://github.com/rossmcdonald).
+An example playbook is included in the `test.yml` file. 
 
