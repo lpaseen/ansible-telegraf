@@ -1,8 +1,5 @@
-- hosts: all
-  vars_files:
-    - defaults/main.yml
-    - vars/main.yml
+- name: Deploy Telegraf and requirements for stats logging (snmp, sysstat)
+  hosts: all
   tasks:
-    - include: tasks/main.yml
-  handlers:
-    - include: handlers/main.yml
+    - import_role:
+        name: telegraf
