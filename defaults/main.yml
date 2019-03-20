@@ -75,6 +75,8 @@ telegraf_influxdata_base_url: "https://repos.influxdata.com"
 snmp_pkgs:
   - snmp
   - libsnmp-base
+  - snmp-mibs-downloader
+
 
 metrics_pkgs:
   - sysstat
