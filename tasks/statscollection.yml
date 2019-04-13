@@ -9,15 +9,11 @@
     name: "{{ snmp_pkgs }}"
     state: present
 
-- name: Install SNMP Extras
+- name: Install SNMP MIBs
   copy:
-    src: "{{ item }}"
-    dest: /var/lib/snmp/mibs/ietf/
+    src: "mibs/"
+    dest: "/var/lib/snmp/mibs/ietf/"
     mode: 0644
-  with_items:
-    - FROGFOOT-RESOURCES-MIB
-    - UBNT-MIB
-    - UBNT-UniFi-MIB
 
 - name: enable sysstat logging
   lineinfile:
