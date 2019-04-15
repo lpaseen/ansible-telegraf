@@ -15,6 +15,12 @@
     dest: "/var/lib/snmp/mibs/ietf/"
     mode: 0644
 
+- name: Copy Edgeswitch SNMP Cpu Collector Script
+  copy:
+    src: edgeswitch_load.sh
+    dest: /etc/telegraf/telegraf.d/scripts/
+    mode: 0755
+
 - name: enable sysstat logging
   lineinfile:
     path: /etc/default/sysstat
