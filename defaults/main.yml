@@ -55,17 +55,39 @@ telegraf_plugins_base:
       fielddrop:
         - "time_*"
   - name: disk
-    options:
-      mountpoints:
-        - "/"
+  - name: swap
+  - name: processes
   - name: diskio
     options:
       skip_serial_number: "true"
-  - name: procstat
-    options:
-      exe: "influxd"
-      prefix: "influxdb"
   - name: net
+  - name: netstat
+  - name: sysstat
+    options:
+      interval: "10s"
+      sadc_path: "/usr/lib/sysstat/sadc"
+      activities:
+        - "DISK"
+        - "SNMP"
+        - "INT"
+      group: "true"
+      options:
+        -C: "cpu"
+        -B: "paging"
+        -b: "io"
+        -d: "disk"
+        -H: "hugepages"
+        -I ALL: "interrupts"
+        -n ALL: "network"
+        -P ALL: "per_cpu"
+        -q: "queue"
+        -r ALL: "mem_util"
+        -S: "swap_util"
+        -u: "cpu_util"
+        -v: "inode"
+        -W: "swap"
+        -w: "task"
+
 
 telegraf_plugins: "{{ telegraf_plugins_base }} + {{ telegraf_plugins_extra | default([]) }}"
 
