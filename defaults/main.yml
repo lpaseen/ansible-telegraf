@@ -60,6 +60,15 @@ telegraf_plugins_base:
   - name: diskio
     options:
       skip_serial_number: "true"
+  - name: ipmi_sensor
+    options:
+      interval: "30s"
+      metric_version: "2"
+  - name: smart
+    options:
+      use_sudo: "true"
+  - name: temp
+  - name: sensors
   - name: net
   - name: netstat
   - name: sysstat
@@ -108,3 +117,5 @@ metrics_pkgs:
   - sysstat
   - dstat
   - ifstat
+  - lm-sensors
+  - smartmontools
