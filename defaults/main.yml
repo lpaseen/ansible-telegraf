@@ -63,7 +63,7 @@ telegraf_plugins_base:
   - name: ipmi_sensor
     options:
       interval: "30s"
-      metric_version: "2"
+      metric_version: 2
   - name: smart
     options:
       use_sudo: "true"
