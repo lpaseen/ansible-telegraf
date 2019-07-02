@@ -17,7 +17,7 @@
 - name: Install Telegraf packages [RHEL/CentOS]
   yum:
     name: telegraf
-    state: present
+    state: latest
     update_cache: yes
   when: telegraf_install_url is not defined or telegraf_install_url == None
 
