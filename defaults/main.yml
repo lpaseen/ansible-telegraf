@@ -55,14 +55,27 @@ telegraf_plugins_base:
       fielddrop:
         - "time_*"
   - name: disk
+    options:
+      ignore_fs:
+        - tmpfs
+        - devfs
+        - devtmpfs
+        - overlay
+        - iso9660
+        - ceph
   - name: swap
   - name: processes
   - name: diskio
     options:
       skip_serial_number: "true"
   - name: kernel
+  - name: kernel_vmstat
   - name: net
+  - name: nstat
+    options:
+      dump_zeros: "true"
   - name: netstat
+  - name: swap
   - name: sysstat
     options:
       interval: "10s"
