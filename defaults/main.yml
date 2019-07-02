@@ -60,6 +60,7 @@ telegraf_plugins_base:
   - name: diskio
     options:
       skip_serial_number: "true"
+  - name: kernel
   - name: net
   - name: netstat
   - name: sysstat
