@@ -148,7 +148,7 @@
 {% if value[0] is number %}
     {{ key }} = [ {{ value|join(', ') }} ]
 {% else %}
-    {{ key }} = [ "{{ value|join('", "') }}" ]
+    {{ key }} = [ '{{ value|join("', '") }}' ]
 {% endif %}
 {% else %}
 {% if value == "true" or value == "false" or value is number %}
@@ -167,7 +167,7 @@
 {% if lv2_value[0] is number %}
       {{ lv2_key }} = [ {{ lv2_value|join(', ') }} ]
 {% else %}
-      {{ lv2_key }} = [ "{{ lv2_value|join('", "') }}" ]
+      {{ lv2_key }} = [ '{{ lv2_value|join("', '") }}' ]
 {% endif %}
 {% else %}
 {% if lv2_value == "true" or lv2_value == "false" or lv2_value is number %}
