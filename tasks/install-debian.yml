@@ -38,4 +38,5 @@
   apt:
     deb: /tmp/telegraf-ansible-download.deb
     state: present
+    force: yes
   when: telegraf_install_url is defined and telegraf_install_url != None
