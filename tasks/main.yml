@@ -1,15 +1,15 @@
 ---
-- include_tasks: install.yml
+- import_tasks: install.yml
   tags: [telegraf, install]
 
-- include_tasks: nvmesh-plugin.yml
+- import_tasks: nvmesh-plugin.yml
   when: "'nvmesh' in group_names"
 
-- include_tasks: statscollection.yml
+- import_tasks: statscollection.yml
 
-- include_tasks: configure.yml
+- import_tasks: configure.yml
   tags: [telegraf, configure]
 
-- include_tasks: start.yml
+- import_tasks: start.yml
   tags: [telegraf, start]
   when: telegraf_start_service
