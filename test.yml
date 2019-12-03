@@ -1,13 +1,9 @@
 ---
-- name: Deploy Telegraf role
+- name: "Configure Telegraf metrics collection/transport service"
   hosts: all
-  become: True
   remote_user: root
+  gather_facts: yes
+
   tasks:
     - import_role:
         name: telegraf
-      tags:
-        - install
-        - configure
-        - telegraf
-        - start
