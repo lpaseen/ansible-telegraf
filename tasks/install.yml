@@ -4,3 +4,9 @@
 
 - import_tasks: install-debian.yml
   when: ansible_os_family == "Debian"
+
+- name: Enable and start the Telegraf service
+  service:
+    name: telegraf
+    state: started
+    enabled: yes
