@@ -30,13 +30,14 @@
     cache_valid_time: 3600
   when: telegraf_install_url is not defined or telegraf_install_url == None
 
-- name: Download Telegraf package via URL [Debian/Ubuntu]
-  command: curl -o /tmp/telegraf-ansible-download.deb {{ telegraf_install_url }}
-  when: telegraf_install_url is defined and telegraf_install_url != None
+#- name: Download Telegraf package via URL [Debian/Ubuntu]
+#  command: curl -o /opt/telegraf-ansible-download.deb {{ telegraf_install_url }}
+#  register: telegraf_pkg_download
+#  when: telegraf_install_url is defined and telegraf_install_url != None
 
 - name: Install downloaded Telegraf package [Debian/Ubuntu]
   apt:
-    deb: /tmp/telegraf-ansible-download.deb
+    deb: "{{ telegraf_install_url }}"
     state: present
     force: yes
   when: telegraf_install_url is defined and telegraf_install_url != None
