@@ -39,5 +39,6 @@
   when: telegraf_start_attempt.failed is defined and telegraf_start_attempt.failed == True
 
 - fail:
-    msg: "{{ telegraf_journal.stdout_lines }}"
+    msg: |
+      "{{ telegraf_journal.stdout_lines }}"
   when: telegraf_start_attempt.failed is defined and telegraf_start_attempt.failed == True
