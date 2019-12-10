@@ -1,12 +1,42 @@
 
-- name: Start the Telegraf service
-  service:
+- meta: flush_handlers
+
+- name: Restart the telegraf service
+  systemd:
     name: telegraf
-    state: started
+    state: restarted
     enabled: yes
-  # Only care to check the status if the state changed to 'started'
-  notify:
-    - "pause"
-    - "check status"
-    - "assert running"
+  register: telegraf_started
+  when:
+    - telegraf_start_service
+    - telegraf_require_restart | default(false)
+
+- name: pause
+  pause:
+    seconds: "{{ telegraf_start_delay }}"
+  when:
+    - telegraf_start_service
+
+- name: check status
+  command: service telegraf status
+  args:
+    warn: false
+  ignore_errors: yes
+  register: telegraf_start_attempt
   become: true
+  when: telegraf_start_service
+
+- name: assert running
+  assert:
+    that:
+      - "telegraf_start_attempt.rc == 0"
+  when: telegraf_start_service
+
+- name: Get telegraf journald logs if service does not appear to be up
+  shell: journalctl _SYSTEMD_INVOCATION_ID=`systemctl show -p InvocationID --value telegraf.service`
+  register: telegraf_journal
+  when: telegraf_start_attempt.failed is defined and telegraf_start_attempt.failed == True
+
+- fail:
+    msg: "{{ telegraf_journal.stdout_lines }}"
+  when: telegraf_start_attempt.failed is defined and telegraf_start_attempt.failed == True
