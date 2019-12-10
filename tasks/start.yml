@@ -27,11 +27,11 @@
   become: true
   when: telegraf_start_service
 
-- name: assert running
-  assert:
-    that:
-      - "telegraf_start_attempt.rc == 0"
-  when: telegraf_start_service
+#- name: assert running
+#  assert:
+#    that:
+#      - "telegraf_start_attempt.rc == 0"
+#  when: telegraf_start_service
 
 - name: Get telegraf journald logs if service does not appear to be up
   shell: journalctl _SYSTEMD_INVOCATION_ID=`systemctl show -p InvocationID --value telegraf.service`
