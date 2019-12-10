@@ -26,6 +26,7 @@
   register: telegraf_start_attempt
   become: true
   when: telegraf_start_service
+  changed_when: False
 
 - name: Get telegraf journald logs if service does not appear to be up
   shell: journalctl _SYSTEMD_INVOCATION_ID=`systemctl show -p InvocationID --value telegraf.service`
