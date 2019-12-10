@@ -16,6 +16,7 @@
     seconds: "{{ telegraf_start_delay }}"
   when:
     - telegraf_start_service
+    - telegraf_started.changed
 
 - name: check status
   command: service telegraf status
