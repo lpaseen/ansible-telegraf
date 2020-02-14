@@ -1,8 +1,8 @@
 ---
 snmp_pkgs:
-  - snmp
-  - libsnmp-base
-  - snmp-mibs-downloader
+  - net-snmp
+  - net-snmp-utils
+  - net-snmp-libs
 
 metrics_pkgs:
   - sysstat
