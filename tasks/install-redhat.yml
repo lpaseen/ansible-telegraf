@@ -10,6 +10,7 @@
     baseurl: "{{ telegraf_influxdata_base_url }}/rhel/$releasever/$basearch/stable"
     name: influxdb
     description: "InfluxDB Repository"
+    gpgkey: "{{ telegraf_influxdata_base_url }}/influxdb.key"
 
 - name: Install Telegraf packages [RHEL/CentOS]
   yum:
