@@ -48,6 +48,8 @@
     regexp: '^ENABLED.*'
     line: ENABLED="true"
   notify: restart sysstat
+  when:
+    - ansible_os_family == "Debian"
 
 - name: Start sysstat service
   service:
