@@ -4,7 +4,7 @@
 - name: Restart the telegraf service
   systemd:
     name: telegraf
-    state: "{% if telegraf_require_restart %}restarted{% else %}started{% endif %}"
+    state: "{% if telegraf_require_restart | default(False) %}restarted{% else %}started{% endif %}"
     enabled: yes
   register: telegraf_started
   when:
