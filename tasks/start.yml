@@ -28,7 +28,7 @@
   changed_when: False
 
 - name: Get telegraf journald logs if service does not appear to be up
-  shell: journalctl _SYSTEMD_INVOCATION_ID=`systemctl show -p InvocationID --value telegraf.service`
+  shell: "journalctl -u telegraf --no-page --since '{{ telegraf_start_delay }} sec ago'"
   register: telegraf_journal
   when: telegraf_start_attempt.failed
 
