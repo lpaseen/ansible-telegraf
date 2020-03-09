@@ -5,16 +5,23 @@
     - always
 
 - import_tasks: install.yml
-  tags: [telegraf, install]
+  tags:
+    - telegraf
+    - telegraf-install
 
 - import_tasks: nvmesh-plugin.yml
   when: "'nvmesh' in group_names"
 
 - import_tasks: statscollection.yml
+  tags:
+    - telegraf-snmp
 
 - import_tasks: configure.yml
-  tags: [telegraf, configure]
+  tags:
+    - telegraf
+    - telegraf-config
 
 - import_tasks: start.yml
-  tags: [telegraf, start]
+  tags:
+    - always
   when: telegraf_start_service
