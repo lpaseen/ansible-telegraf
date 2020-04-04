@@ -75,6 +75,7 @@ telegraf_plugins_base:
     options:
       dump_zeros: "true"
   - name: netstat
+  - name: ethtool
   - name: internal
   - name: swap
   - name: sysstat
