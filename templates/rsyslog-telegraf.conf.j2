@@ -1,0 +1,9 @@
+$ActionQueueType LinkedList # use asynchronous processing
+$ActionQueueFileName srvrfwd # set file name, also enables disk mode
+$ActionResumeRetryCount -1 # infinite retries on insert failure
+$ActionQueueSaveOnShutdown on # save in-memory data if rsyslog shuts down
+
+# forward over tcp with octet framing according to RFC 5425
+{% if telegraf_rsyslog_config is defined and telegraf_rsyslog_config != None %}
+{{ telegraf_rsyslog_config }}
+{% endif %}
