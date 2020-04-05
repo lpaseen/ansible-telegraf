@@ -28,7 +28,7 @@
   changed_when: False
 
 - name: Get telegraf journald logs if service does not appear to be up
-  shell: "journalctl -u telegraf --no-page --since 1 min ago'"
+  shell: "journalctl -u telegraf --no-page --since '1 min ago'"
   register: telegraf_journal
   when: telegraf_start_attempt.failed
 
