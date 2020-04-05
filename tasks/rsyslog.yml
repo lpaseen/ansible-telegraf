@@ -1,7 +1,7 @@
 ---
 - name: Ensure rsyslogd is installed
   package:
-    name: "rsyslogd"
+    name: rsyslog
     state: present
   when:
     - telegraf_rsyslog_enable
