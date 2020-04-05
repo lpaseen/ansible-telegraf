@@ -4,7 +4,14 @@
   set_fact:
     telegraf_require_restart: True
 
-- name: restart sysstat
-  service:
-    name: sysstat
+- name: restart rsyslog
+  systemd:
+    name: rsyslog
     state: restarted
+    enabled: yes
+
+- name: restart rsyslog
+  serrvice:
+    name: rsyslog
+    state: restarted
+    enabled: yes
