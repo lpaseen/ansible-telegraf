@@ -9,3 +9,9 @@
     name: rsyslog
     state: restarted
     enabled: yes
+
+- name: restart sysstat
+  systemd:
+    name: sysstat
+    state: restarted
+    enabled: yes
