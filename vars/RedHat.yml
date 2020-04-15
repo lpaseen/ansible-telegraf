@@ -1,4 +1,6 @@
 ---
+# telegraf_rpm_pkg_url: https://telegrafreleases.blob.core.windows.net/linux/telegraf-1.13.0~with~pg-1.x86_64.rpm
+
 snmp_pkgs:
   - net-snmp
   - net-snmp-utils
