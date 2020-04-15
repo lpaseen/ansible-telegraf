@@ -11,9 +11,19 @@
     name: influxdb
     description: "InfluxDB Repository"
     gpgkey: "{{ telegraf_influxdata_base_url }}/influxdb.key"
+  when: telegraf_rpm_pkg_url is not defined or telegraf_rpm_pkg_url == None
 
 - name: Install Telegraf packages [RHEL/CentOS]
   yum:
     name: telegraf
     state: latest
     update_cache: yes
+  when: telegraf_rpm_pkg_url is not defined or telegraf_rpm_pkg_url == None
+
+- name: Install downloaded Telegraf package [RHEL/CentOS]
+  yum:
+    name: "{{ telegraf_rpm_pkg_url }}"
+    state: present
+    allow_downgrade: yes
+  when: telegraf_rpm_pkg_url is defined and telegraf_rpm_pkg_url != None
+  notify: restart telegraf

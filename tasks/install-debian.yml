@@ -14,13 +14,13 @@
   apt_key:
     url: "{{ telegraf_influxdata_base_url }}/influxdb.key"
     state: present
-  when: telegraf_install_url is not defined or telegraf_install_url == None
+  when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
 
 - name: Add InfluxData repository [Debian/Ubuntu]
   apt_repository:
     repo: deb {{ telegraf_influxdata_base_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ telegraf_install_version }}
     state: present
-  when: telegraf_install_url is not defined or telegraf_install_url == None
+  when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
 
 - name: Install Telegraf packages [Debian/Ubuntu]
   apt:
@@ -28,17 +28,17 @@
     state: latest
     update_cache: yes
     cache_valid_time: 3600
-  when: telegraf_install_url is not defined or telegraf_install_url == None
+  when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
 
 #- name: Download Telegraf package via URL [Debian/Ubuntu]
-#  command: curl -o /opt/telegraf-ansible-download.deb {{ telegraf_install_url }}
+#  command: curl -o /opt/telegraf-ansible-download.deb {{ telegraf_deb_pkg_url }}
 #  register: telegraf_pkg_download
-#  when: telegraf_install_url is defined and telegraf_install_url != None
+#  when: telegraf_deb_pkg_url is defined and telegraf_deb_pkg_url != None
 
 - name: Install downloaded Telegraf package [Debian/Ubuntu]
   apt:
-    deb: "{{ telegraf_install_url }}"
+    deb: "{{ telegraf_deb_pkg_url }}"
     state: present
     force: yes
-  when: telegraf_install_url is defined and telegraf_install_url != None
+  when: telegraf_deb_pkg_url is defined and telegraf_deb_pkg_url != None
   notify: restart telegraf
