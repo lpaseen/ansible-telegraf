@@ -77,14 +77,14 @@ telegraf_output_plugins:
       precision: "{{ telegraf_influxdb_precision }}"
       write_consistency: "{{ telegraf_influxdb_write_consistency }}"
       timeout: "{{ telegraf_influxdb_timeout }}"
-      username: "{{ telegraf_influxdb_username }}"
-      password: "{{ telegraf_influxdb_password }}"
-      user_agent: "{{ telegraf_influxdb_user_agent }}"
-      udp_payload: "{{ telegraf_influxdb_udp_payload }}"
-      ssl_ca: "{{ telegraf_influxdb_ssl_ca }}"
-      ssl_cert: "{{ telegraf_influxdb_ssl_cert }}"
-      ssl_key: "{{ telegraf_influxdb_ssl_key }}"
-      insecure_skip_verify: "{{ telegraf_influxdb_insecure_skip_verify }}"
+#      username: "{{ telegraf_influxdb_username }}"
+#      password: "{{ telegraf_influxdb_password }}"
+#      user_agent: "{{ telegraf_influxdb_user_agent }}"
+#      udp_payload: "{{ telegraf_influxdb_udp_payload }}"
+#      ssl_ca: "{{ telegraf_influxdb_ssl_ca }}"
+#      ssl_cert: "{{ telegraf_influxdb_ssl_cert }}"
+#      ssl_key: "{{ telegraf_influxdb_ssl_key }}"
+#      insecure_skip_verify: "{{ telegraf_influxdb_insecure_skip_verify }}"
 
 # uncomment for postgresql/timescaledb output
 
