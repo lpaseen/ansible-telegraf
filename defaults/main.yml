@@ -38,6 +38,9 @@ telegraf_rsyslog_config: 'kern.*;*.=emerg;*.=alert;*.=crit;*.=err;*.=warning; {{
 
 # defaults related to influxdb output plugin
 telegraf_influxdb_url: http://localhost:8086
+telegraf_influxdb_urls:
+  - "{{ telegraf_influxdb_url }}"
+
 telegraf_influxdb_database: telegraf
 telegraf_influxdb_precision: s
 telegraf_influxdb_retention_policy: autogen
