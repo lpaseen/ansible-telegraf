@@ -162,10 +162,8 @@ telegraf_plugins: "{{ telegraf_plugins_base }} + {{ telegraf_plugins_extra | def
 
 telegraf_influxdata_base_url: "https://repos.influxdata.com"
 
-telegraf_unifi_snmp: False
-telegraf_uap_ips: []
-telegraf_edgeswitch_snmp: False
-telegraf_edgeswitch_ips: []
+# enable snmp collection
+telegraf_enable_snmp: true
 
 snmp_pkgs:
   - snmp

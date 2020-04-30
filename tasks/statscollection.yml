@@ -8,39 +8,16 @@
   package:
     name: "{{ snmp_pkgs }}"
     state: present
+  when:
+    - telegraf_enable_snmp
 
 - name: Install SNMP MIBs
   copy:
     src: "mibs/"
     dest: "/var/lib/snmp/mibs/ietf/"
     mode: 0644
-
-- name: Copy Edgeswitch SNMP Cpu Collector Script
-  copy:
-    src: edgeswitch_load.sh
-    dest: /etc/telegraf/telegraf.d/scripts/
-    mode: 0755
-  notify: restart telegraf
-
-#- name: Copy Edgeswitch Telegraf Config Template
-#  template:
-#    src: edgeswitch.conf.j2
-#    dest: /etc/telegraf/telegraf.d/edgeswitch.conf
-#    mode: 0755
-#  when:
-#    - "'unms' in group_names"
-#    - telegraf_edgeswitch_snmp
-#  notify: restart telegraf
-#
-#- name: Copy Unifi AP Telegraf Config Template
-#  template:
-#    src: unifi.conf.j2
-#    dest: /etc/telegraf/telegraf.d/unifi.conf
-#    mode: 0755
-#  when:
-#    - "'unifi' in group_names"
-#    - telegraf_unifi_snmp
-#  notify: restart telegraf
+  when:
+    telegraf_enable_snmp
 
 - name: enable sysstat logging
   lineinfile:
