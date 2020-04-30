@@ -32,14 +32,11 @@ telegraf_omit_hostname: "false"
 # telegraf_rpm_pkg_url: https://telegrafreleases.blob.core.windows.net/linux/telegraf-1.13.0~with~pg-1.x86_64.rpm
 # telegraf_deb_pkg_url: https://telegrafreleases.blob.core.windows.net/linux/telegraf_1.13.0~with~pg-1_amd64.deb
 
-telegraf_rsyslog_enable: False
-telegraf_rsyslog_connection: '@@(o)127.0.0.1:6514;RSYSLOG_SyslogProtocol23Format'
-telegraf_rsyslog_config: 'kern.*;*.=emerg;*.=alert;*.=crit;*.=err;*.=warning; {{ telegraf_rsyslog_connection }}'
-
 # defaults related to influxdb output plugin
-telegraf_influxdb_url: http://localhost:8086
-telegraf_influxdb_urls:
-  - "{{ telegraf_influxdb_url }}"
+telegraf_influxdb_default_url: http://localhost:8086
+telegraf_influxdb_additional_urls: []
+
+telegraf_influxdb_urls: "[ '{{ telegraf_influxdb_default_url }}' ] + {{ telegraf_influxdb_additional_urls }}"
 
 telegraf_influxdb_database: telegraf
 telegraf_influxdb_precision: s
@@ -74,8 +71,7 @@ telegraf_output_plugins:
 
   - name: influxdb
     options:
-      urls:
-        - "{{ telegraf_influxdb_url }}"
+      urls: "{{ telegraf_influxdb_urls }}"
       database: "{{ telegraf_influxdb_database }}"
       precision: "{{ telegraf_influxdb_precision }}"
       write_consistency: "{{ telegraf_influxdb_write_consistency }}"
