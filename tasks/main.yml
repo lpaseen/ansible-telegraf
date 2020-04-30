@@ -16,12 +16,6 @@
   tags:
     - telegraf-snmp
 
-- import_tasks: rsyslog.yml
-  when:
-    - telegraf_rsyslog_enable
-  tags:
-    - telegraf-rsyslog
-
 - import_tasks: configure.yml
   tags:
     - telegraf
