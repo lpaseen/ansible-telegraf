@@ -12,3 +12,4 @@ metrics_pkgs:
   - iproute
   - lm_sensors
   - smartmontools
+  - htop
