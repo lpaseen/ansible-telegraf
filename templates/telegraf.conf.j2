@@ -65,9 +65,9 @@
   flush_jitter = "{{ telegraf_flush_jitter }}"
 
   ## Run telegraf in debug mode
-  debug = {{ telegraf_debug }}
+  debug = {{ telegraf_debug|lower }}
   ## Run telegraf in quiet mode
-  quiet = {{ telegraf_quiet }}
+  quiet = {{ telegraf_quiet|lower }}
 
   # Override default hostname, if empty use os.Hostname()
 {% if telegraf_hostname is defined and telegraf_hostname != None %}
