@@ -46,7 +46,7 @@ telegraf_influxdb_ssl_ca:
 telegraf_influxdb_ssl_cert:
 telegraf_influxdb_ssl_key:
 telegraf_influxdb_insecure_skip_verify:
-telegraf_influxdb_timeout: 5s
+telegraf_influxdb_timeout: 30s
 telegraf_influxdb_username:
 telegraf_influxdb_password:
 telegraf_influxdb_user_agent:
@@ -69,6 +69,20 @@ telegraf_timescale_connection: "host={{ telegraf_timescale_host|default('localho
 
 telegraf_output_plugins:
 
+# Uncomment for invluxdb v2+ output
+#  - name: influxdb_v2
+#    options:
+#      urls: "{{ telegraf_influxdb_urls }}"
+#      token: "{{ influxdbv2_token }}"
+#      organization: home.prettybaked.com
+#      bucket: "telegraf"
+#      bucket_tag: "telegraf"
+#      exclude_bucket_tag: false
+#      timeout: "5s"
+#      http_headers: '{"X-Special-Header" = "Special-Value"}'
+#      user_agent: "telegraf"
+#      content_encoding: "gzip"
+#      influx_uint_support: false
   - name: influxdb
     options:
       urls: "{{ telegraf_influxdb_urls }}"
@@ -133,7 +147,7 @@ telegraf_plugins_base:
   - name: swap
   - name: sysstat
     options:
-      interval: "10s"
+      interval: "30s"
       sadc_path: "/usr/lib/sysstat/sadc"
       activities:
         - "DISK"
