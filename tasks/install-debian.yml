@@ -1,11 +1,7 @@
 ---
 - name: Install any necessary dependencies [Debian/Ubuntu]
   apt:
-    name:
-      - python-httplib2
-      - python-apt
-      - curl
-      - apt-transport-https
+    name: "{{ telegraf_dep_pkgs }}"
     state: present
     update_cache: yes
     cache_valid_time: 3600
