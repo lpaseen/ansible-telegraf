@@ -1,0 +1,6 @@
+telegraf_dep_pkgs:
+  - python3-httplib2
+  - python3-apt
+  - curl
+  - apt-transport-https
+
