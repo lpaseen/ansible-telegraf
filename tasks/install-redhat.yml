@@ -24,5 +24,6 @@
     name: "{{ telegraf_rpm_pkg_url }}"
     state: present
     allow_downgrade: yes
+    disable_gpg_check: yes
   when: telegraf_rpm_pkg_url is defined and telegraf_rpm_pkg_url != None
   notify: restart telegraf
