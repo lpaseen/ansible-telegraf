@@ -192,6 +192,7 @@ metrics_pkgs:
   - lm-sensors
   - smartmontools
   - htop
+  - ipmitool
 
 # Example Grok Patterns for use with logparser input
 # Works with default nginx 'main' log and 'fail2ban.log' configured by ansible-nginx role.
