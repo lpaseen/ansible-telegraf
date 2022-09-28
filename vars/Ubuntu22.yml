@@ -4,3 +4,8 @@ telegraf_dep_pkgs:
   - curl
   - apt-transport-https
 
+metrics_pkgs:
+  - sysstat
+  - dstat
+  - smartmontools
+  - htop
