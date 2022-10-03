@@ -23,6 +23,3 @@
     - telegraf-config
 
 - import_tasks: start.yml
-  tags:
-    - always
-  when: telegraf_start_service
