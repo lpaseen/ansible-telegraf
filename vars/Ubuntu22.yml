@@ -9,3 +9,7 @@ metrics_pkgs:
   - dstat
   - smartmontools
   - htop
+  - net-tools
+  - ethtool
+  - ifstat
+  - ipmitool

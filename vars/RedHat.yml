@@ -4,11 +4,6 @@
 telegraf_dep_pkgs:
   - curl
 
-snmp_pkgs:
-  - net-snmp
-  - net-snmp-utils
-  - net-snmp-libs
-
 metrics_pkgs:
   - sysstat
   - dstat
@@ -16,3 +11,5 @@ metrics_pkgs:
   - lm_sensors
   - smartmontools
   - htop
+  - ethtool
+  - ipmitool
