@@ -158,12 +158,11 @@ telegraf_plugins_base:
     options:
       dump_zeros: "true"
   - name: netstat
-  - name: ethtool
   - name: internal
   - name: swap
   - name: sysstat
     options:
-      interval: "10s"
+      interval: "30s"
       sadc_path: "/usr/lib/sysstat/sadc"
       activities:
         - "DISK"
