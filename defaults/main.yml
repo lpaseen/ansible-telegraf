@@ -1,4 +1,20 @@
 ---
+
+# Whether or not the playbook is run locally
+# This should only be set in the Vagrantfile and not modified elsewhere
+is_vagrant: no
+
+# If yes, service will be started. Will not be started if set to no.
+telegraf_start_service: yes
+telegraf_start_delay: 6
+
+# If yes, will overwrite the packaged configuration with an Asnible/jinja2 template
+telegraf_template_configuration: yes
+
+# Path for finding Telegraf data. Added for backwards-compatibility.
+telegraf_binary_path: /usr/bin/telegraf
+telegraf_configuration_dir: /etc/telegraf
+
 # Channel of Telegraf to install
 telegraf_install_version: stable
 
@@ -14,17 +30,17 @@ telegraf_tags:
 telegraf_aws_tags: false
 telegraf_aws_tags_prefix:
 
-telegraf_agent_interval: 1s
+telegraf_agent_interval: 15s
 telegraf_round_interval: "true"
 telegraf_metric_batch_size: "1000"
 telegraf_metric_buffer_limit: "10000"
 
-telegraf_collection_jitter: 0s
-telegraf_flush_interval: 10s
-telegraf_flush_jitter: 0s
+telegraf_collection_jitter: 5s
+telegraf_flush_interval: 5s
+telegraf_flush_jitter: 5s
 telegraf_debug: "false"
 telegraf_quiet: "false"
-telegraf_hostname:
+telegraf_hostname: "{{ ansible_hostname|default('localhost') }}"
 telegraf_omit_hostname: "false"
 
 # These can be defined for package installation from a specfic location
@@ -147,12 +163,14 @@ telegraf_plugins_base:
   - name: swap
   - name: sysstat
     options:
-      interval: "30s"
+      interval: "10s"
       sadc_path: "/usr/lib/sysstat/sadc"
       activities:
         - "DISK"
+        - "XDISK"
         - "SNMP"
         - "INT"
+        - "POWER"
       group: "true"
       options:
         -C: "cpu"
@@ -193,6 +211,8 @@ metrics_pkgs:
   - smartmontools
   - htop
   - ipmitool
+  - ethtool
+  - net-tools
 
 # Example Grok Patterns for use with logparser input
 # Works with default nginx 'main' log and 'fail2ban.log' configured by ansible-nginx role.
