@@ -13,3 +13,4 @@ metrics_pkgs:
   - ethtool
   - ifstat
   - ipmitool
+  - lm-sensors

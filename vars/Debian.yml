@@ -5,9 +5,11 @@ telegraf_dep_pkgs:
 metrics_pkgs:
   - sysstat
   - dstat
-  - iproute
-  - lm_sensors
   - smartmontools
   - htop
+  - net-tools
   - ethtool
+  - ifstat
   - ipmitool
+  - lm-sensors
+
