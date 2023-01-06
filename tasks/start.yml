@@ -12,25 +12,24 @@
 
 - name: pause
   pause:
-    seconds: "{{ telegraf_start_delay }}"
+    seconds: 10
   when:
     - telegraf_start_service
     - telegraf_started.changed
 
 - name: check status
   command: service telegraf status
-  args:
-    warn: false
-  ignore_errors: yes
   register: telegraf_start_attempt
-  become: true
   when: telegraf_start_service
   changed_when: False
+
+- set_fact:
+    telegraf_status: "{{ telegraf_start_attempt | regex_search('Active: active (running)', multiline=True, ignorecase=True) }}"
 
 - name: Get telegraf journald logs if service does not appear to be up
   shell: "journalctl -u telegraf --no-page --since '1 min ago'"
   register: telegraf_journal
-  when: telegraf_start_attempt.failed
+  when: telegraf_status is false
 
 - debug:
     var: |
