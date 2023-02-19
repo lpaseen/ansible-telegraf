@@ -49,11 +49,10 @@ telegraf_omit_hostname: "false"
 # telegraf_deb_pkg_url: https://telegrafreleases.blob.core.windows.net/linux/telegraf_1.13.0~with~pg-1_amd64.deb
 
 # defaults related to influxdb output plugin
-telegraf_influxdb_default_url: http://localhost:8086
+influxdb_server_ip: localhost
+telegraf_influxdb_default_url: "http://{{ influxdb_server_ip }}:8086"
 telegraf_influxdb_additional_urls: []
-
-telegraf_influxdb_urls: "[ '{{ telegraf_influxdb_default_url }}' ] + {{ telegraf_influxdb_additional_urls }}"
-
+telegraf_influxdb_urls: "{{ [ telegraf_influxdb_default_url  ] +  telegraf_influxdb_additional_urls | default([]) }}"
 telegraf_influxdb_database: telegraf
 telegraf_influxdb_precision: s
 telegraf_influxdb_retention_policy: autogen
@@ -75,30 +74,30 @@ telegraf_timescale_password: "pgsecret"
 telegraf_timescale_sslmode: "disable"
 telegraf_timescale_dbname: "timescale"
 telegraf_timescale_schema: "public"
-telegraf_timescale_table_template: "CREATE TABLE IF NOT EXISTS {TABLE}({COLUMNS}); SELECT create_hypertable({TABLELITERAL},'time',chunk_time_interval := '24 hours'::interval,if_not_exists := true);"
-telegraf_timescale_tags_as_foreignkeys: "false"
+telegraf_timescale_table_template:
+  - "{% raw %}''CREATE TABLE {{ .table }} ({{ .columns }})''{% endraw %}"
+  - "{% raw %}''SELECT create_hypertable({{ .table|quoteLiteral }}, 'time', chunk_time_interval => INTERVAL '1h')''{% endraw %}"
+  - "{% raw %}''ALTER TABLE {{ .table }} SET (timescaledb.compress, timescaledb.compress_segmentby = 'tag_id')''{% endraw %}"
 telegraf_timescale_tags_as_jsonb: "false"
 telegraf_timescale_fields_as_jsonb: "false"
-telegraf_timescale_connection: "host={{ telegraf_timescale_host|default('localhost') }} user={{ telegraf_timescale_user|default('postgres') }} password={{ telegraf_timescale_password|default('pgsecret') }} sslmode={{ telegraf_timescale_sslmode|default('disable') }} dbname={{ telegraf_timescale_dbname|default('timescale') }}"
-#telegraf_timescale_connection: "postgres://{{ telegraf_timescale_user|default('postgres') }}:{{ telegraf_timescale_password|default('pgsecret') }}@{{ telegraf_timescale_host|default('localhost') }}/{{ telegraf_timescale_dbname|default('timescale') }}?sslmode={{ telegraf_timescale_sslmode|default('disable') }}"
-
+telegraf_timescale_connection: "postgres://{{ telegraf_timescale_user }}:{{ telegraf_timescale_password }}@{{ telegraf_timescale_host }}/{{ telegraf_timescale_dbname }}?sslmode={{ telegraf_timescale_sslmode }}"
 
 telegraf_output_plugins:
-
-# Uncomment for invluxdb v2+ output
+# influxdb v2 output config (needs further testing)
 #  - name: influxdb_v2
 #    options:
-#      urls: "{{ telegraf_influxdb_urls }}"
-#      token: "{{ influxdbv2_token }}"
-#      organization: home.prettybaked.com
-#      bucket: "telegraf"
-#      bucket_tag: "telegraf"
-#      exclude_bucket_tag: false
+#       urls: "{{ telegraf_influxdb_urls }}"
+#      token: 'dT5ukECbcM062PECppcgyUaTrYYmhFFfiX8rm6cKxriPWMq9zRCVlC2GP9BLfIZQkZ0qa19a0v7T3SyxEp9LVw=='
+#      organization: 'home.prettybaked.com'
+#      bucket: "stats"
+#      bucket_tag: "stats"
+#      exclude_bucket_tag: 'false'
 #      timeout: "5s"
-#      http_headers: '{"X-Special-Header" = "Special-Value"}'
+#      #http_headers: '{"X-Special-Header" = "Special-Value"}'
 #      user_agent: "telegraf"
 #      content_encoding: "gzip"
-#      influx_uint_support: false
+#      influx_uint_support: 'false'
+# influxdb v1 output config
   - name: influxdb
     options:
       urls: "{{ telegraf_influxdb_urls }}"
@@ -106,26 +105,16 @@ telegraf_output_plugins:
       precision: "{{ telegraf_influxdb_precision }}"
       write_consistency: "{{ telegraf_influxdb_write_consistency }}"
       timeout: "{{ telegraf_influxdb_timeout }}"
-#      username: "{{ telegraf_influxdb_username }}"
-#      password: "{{ telegraf_influxdb_password }}"
-#      user_agent: "{{ telegraf_influxdb_user_agent }}"
-#      udp_payload: "{{ telegraf_influxdb_udp_payload }}"
-#      ssl_ca: "{{ telegraf_influxdb_ssl_ca }}"
-#      ssl_cert: "{{ telegraf_influxdb_ssl_cert }}"
-#      ssl_key: "{{ telegraf_influxdb_ssl_key }}"
-#      insecure_skip_verify: "{{ telegraf_influxdb_insecure_skip_verify }}"
-
-# uncomment for postgresql/timescaledb output
-
-#  - name: postgresql
-#    options:
-#      connection: "{{ telegraf_timescale_connection }}"
-#      tags_as_foreignkeys: "{{ telegraf_timescale_tags_as_foreignkeys }}"
-#      table_template: "{{ telegraf_timescale_table_template }}"
-#      schema: "{{ telegraf_timescale_schema }}"
-#      tags_as_jsonb: "{{ telegraf_timescale_tags_as_jsonb }}"
-#      fields_as_jsonb: "{{ telegraf_timescale_fields_as_jsonb }}"
-
+# timescaledb output config (requires patched telegraf client)
+  - name: postgresql
+    options:
+      connection: "{{ telegraf_timescale_connection }}"
+      tags_as_foreign_keys: "{{ telegraf_timescale_tags_as_foreignkeys }}"
+      create_templates: "{{ telegraf_timescale_table_template }}"
+      schema: "{{ telegraf_timescale_schema }}"
+      tags_as_jsonb: "{{ telegraf_timescale_tags_as_jsonb }}"
+      fields_as_jsonb: "{{ telegraf_timescale_fields_as_jsonb }}"
+  # - name: prometheus_client
 
 
 telegraf_plugins_base:
