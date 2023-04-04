@@ -4,7 +4,8 @@
   with_first_found:
     - "{{ ansible_distribution }}{{ ansible_distribution_major_version }}.yml"
     - "{{ ansible_os_family }}.yml"
-
+  tags:
+       - always
 - import_tasks: install.yml
   tags:
     - telegraf
@@ -12,6 +13,8 @@
 
 - import_tasks: nvmesh-plugin.yml
   when: "'nvmesh' in group_names"
+  tags:
+    - telegraf-nvmesh
 
 - import_tasks: statscollection.yml
   tags:
