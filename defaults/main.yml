@@ -71,7 +71,7 @@ influxdb2_org: default
 #### Telegraf InfluxDB v2 Output
 influxdb2_server_ip: 0.0.0.0
 telegraf_influxdb2_default_url: "http://{{ influxdb2_server_ip }}:8086"
-telegraf_influxdb2_organization: {{ influxdb2_org }}
+telegraf_influxdb2_organization: "{{ influxdb2_org }}"
 telegraf_influxdb2_bucket: telegraf
 telegraf_influxdb2_timeout: 30s
 telegraf_influxdb2_bucket_tag: ""
@@ -129,12 +129,9 @@ telegraf_output_plugins:
       url: "{{ prometheus_default_url }}"
       data_format: "{{ prometheus_data_format }}"
       headers:
-        "{% for header, value in prometheus_http_headers %}{{ header }}: {{ value }}{% endfor %}"
-
-      # headers:
-      #   Content-Type: application/x-protobuf
-      #   Content-Encoding: snappy
-      #   X-Prometheus-Remote-Write-Version: 0.1.0
+        Content-Type: application/x-protobuf
+        Content-Encoding: snappy
+        X-Prometheus-Remote-Write-Version: 0.1.0
 
   # Loki remote_write output config
   - name: loki

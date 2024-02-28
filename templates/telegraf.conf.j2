@@ -127,26 +127,6 @@
 {% endfor %}
 {% endif %}
 {% endfor %}
-{# {% for plugin in telegraf_output_plugins %}
-[[outputs.{{ plugin.name }}]]
-  {% if plugin.options is defined %}
-    {% for key, value in plugin.options.items() %}
-      {% if value is sequence and value is not string %}
-        {% if value[0] is number %}
-    {{ key }} = [ {{ value|join(', ') }} ]
-        {% else %}
-    {{ key }} = [ '{{ value|join("', '") }}' ]
-        {% endif %}
-      {% else %}
-        {% if value == "true" or value == "false" or value is number %}
-    {{ key }} = {{ value }}
-        {% else %}
-    {{ key }} = "{{ value }}"
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-{% endfor %}
 
 
 ###############################################################################
