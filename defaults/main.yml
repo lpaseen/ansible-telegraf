@@ -1,15 +1,13 @@
----
-
 # Whether or not the playbook is run locally
 # This should only be set in the Vagrantfile and not modified elsewhere
-is_vagrant: no
+is_vagrant: false
 
 # If yes, service will be started. Will not be started if set to no.
-telegraf_start_service: yes
+telegraf_start_service: true
 telegraf_start_delay: 6
 
 # If yes, will overwrite the packaged configuration with an Asnible/jinja2 template
-telegraf_template_configuration: yes
+telegraf_template_configuration: true
 
 # Path for finding Telegraf data. Added for backwards-compatibility.
 telegraf_binary_path: /usr/bin/telegraf
@@ -40,19 +38,14 @@ telegraf_flush_interval: 5s
 telegraf_flush_jitter: 5s
 telegraf_debug: "false"
 telegraf_quiet: "false"
-telegraf_hostname: "{{ ansible_hostname|default('localhost') }}"
+telegraf_hostname: "{{ ansible_hostname | default('localhost') }}"
 telegraf_omit_hostname: "false"
 
-# These can be defined for package installation from a specfic location
-# e.g.: TimescaleDB Telegraf Package with Postgresql/TimescaleDB Outputs added
-# telegraf_rpm_pkg_url: https://telegrafreleases.blob.core.windows.net/linux/telegraf-1.13.0~with~pg-1.x86_64.rpm
-# telegraf_deb_pkg_url: https://telegrafreleases.blob.core.windows.net/linux/telegraf_1.13.0~with~pg-1_amd64.deb
-
 # defaults related to influxdb output plugin
-influxdb_server_ip: localhost
+influxdb_server_ip: 0.0.0.0
 telegraf_influxdb_default_url: "http://{{ influxdb_server_ip }}:8086"
 telegraf_influxdb_additional_urls: []
-telegraf_influxdb_urls: "{{ [ telegraf_influxdb_default_url  ] +  telegraf_influxdb_additional_urls | default([]) }}"
+telegraf_influxdb_urls: "{{ [telegraf_influxdb_default_url] + telegraf_influxdb_additional_urls | default([]) }}"
 telegraf_influxdb_database: telegraf
 telegraf_influxdb_precision: s
 telegraf_influxdb_retention_policy: autogen
@@ -66,124 +59,181 @@ telegraf_influxdb_username:
 telegraf_influxdb_password:
 telegraf_influxdb_user_agent:
 telegraf_influxdb_udp_payload:
+# telegraf_install_url: https://dl.influxdata.com/telegraf/nightlies/telegraf_nightly_amd64.deb
+telegraf_rpm_pkg_url: https://dl.influxdata.com/telegraf/releases/telegraf-1.25.2-1.x86_64.rpm
+telegraf_deb_pkg_url: https://dl.influxdata.com/telegraf/releases/telegraf_1.25.2-1_amd64.deb
 
-# Defaults related to timescaledb output plugin
-telegraf_timescale_host: "localhost"
-telegraf_timescale_user: "postgres"
-telegraf_timescale_password: "pgsecret"
-telegraf_timescale_sslmode: "disable"
-telegraf_timescale_dbname: "timescale"
-telegraf_timescale_schema: "public"
-telegraf_timescale_table_template:
-  - "{% raw %}''CREATE TABLE {{ .table }} ({{ .columns }})''{% endraw %}"
-  - "{% raw %}''SELECT create_hypertable({{ .table|quoteLiteral }}, 'time', chunk_time_interval => INTERVAL '1h')''{% endraw %}"
-  - "{% raw %}''ALTER TABLE {{ .table }} SET (timescaledb.compress, timescaledb.compress_segmentby = 'tag_id')''{% endraw %}"
-telegraf_timescale_tags_as_jsonb: "false"
-telegraf_timescale_fields_as_jsonb: "false"
-telegraf_timescale_connection: "postgres://{{ telegraf_timescale_user }}:{{ telegraf_timescale_password }}@{{ telegraf_timescale_host }}/{{ telegraf_timescale_dbname }}?sslmode={{ telegraf_timescale_sslmode }}"
+
+percpu: "true"
+telegraf_enable_snmp: false
+influxdb2_org: default
+
+#### Telegraf InfluxDB v2 Output
+influxdb2_server_ip: 0.0.0.0
+telegraf_influxdb2_default_url: "http://{{ influxdb2_server_ip }}:8086"
+telegraf_influxdb2_organization: {{ influxdb2_org }}
+telegraf_influxdb2_bucket: telegraf
+telegraf_influxdb2_timeout: 30s
+telegraf_influxdb2_bucket_tag: ""
+telegraf_influxdb2_exclude_bucket_tag: "false"
+telegraf_influxdb2_http_headers: ""
+telegraf_influxdb2_http_proxy: ""
+telegraf_influxdb2_user_agent: telegraf
+telegraf_influxdb2_content_encoding: gzip
+telegraf_influxdb2_influx_uint_support: "false"
+telegraf_influxdb2_tls_cert: "{{ ssl_certpath }}"
+telegraf_influxdb2_tls_key: "{{ ssl_keypath }}"
+telegraf_influxdb2_insecure_skip_verify: "false"
+
+# Telegraf Prometheus / Mimir remote write Output
+prometheus_server_ip: 10.0.10.30
+prometheus_default_url: "http://{{ prometheus_server_ip }}:9009/api/v1/push"
+prometheus_data_format: prometheus_remote_write
+prometheus_http_headers:
+  - header: Content-Type
+    value: application/x-protobuf
+  - header: Content-Encoding
+    value: snappy
+  - header: X-Prometheus-Remote-Write-Version
+    value: 0.1.0
+
+# Telegraf Loki / Mimir remote write Output
+loki_server_ip: 10.0.10.30
+loki_default_url: "http://{{ loki_server_ip }}:3100"
+loki_endpoint: loki/api/v1/push
+loki_timeout: 5s
+loki_metric_name_label: "{{ ansible_hostname }}"
+
 
 telegraf_output_plugins:
-# influxdb v2 output config (needs further testing)
-#  - name: influxdb_v2
-#    options:
-#       urls: "{{ telegraf_influxdb_urls }}"
-#      token: 'dT5ukECbcM062PECppcgyUaTrYYmhFFfiX8rm6cKxriPWMq9zRCVlC2GP9BLfIZQkZ0qa19a0v7T3SyxEp9LVw=='
-#      organization: 'home.prettybaked.com'
-#      bucket: "stats"
-#      bucket_tag: "stats"
-#      exclude_bucket_tag: 'false'
-#      timeout: "5s"
-#      #http_headers: '{"X-Special-Header" = "Special-Value"}'
-#      user_agent: "telegraf"
-#      content_encoding: "gzip"
-#      influx_uint_support: 'false'
-# influxdb v1 output config
-  - name: influxdb
+  # influxdb v2 output config
+  - name: influxdb_v2
     options:
-      urls: "{{ telegraf_influxdb_urls }}"
-      database: "{{ telegraf_influxdb_database }}"
-      precision: "{{ telegraf_influxdb_precision }}"
-      write_consistency: "{{ telegraf_influxdb_write_consistency }}"
-      timeout: "{{ telegraf_influxdb_timeout }}"
-# timescaledb output config (requires patched telegraf client)
-  - name: postgresql
+      urls:
+        - "{{ telegraf_influxdb2_default_url }}"
+      token: "{{ vault_influxdb2_telegraf_token }}"
+      organization: "{{ telegraf_influxdb2_organization }}"
+      bucket: "{{ telegraf_influxdb2_bucket }}"
+      exclude_bucket_tag: "{{ telegraf_influxdb2_exclude_bucket_tag }}"
+      timeout: "{{ telegraf_influxdb2_timeout }}"
+      user_agent: "{{ telegraf_influxdb2_user_agent }}"
+      content_encoding: "{{ telegraf_influxdb2_content_encoding }}"
+      influx_uint_support: "{{ telegraf_influxdb2_influx_uint_support }}"
+      # tls_ca: "/etc/telegraf/ca.pem"
+      tls_cert: "{{ ssl_cert_slurp_path }}"
+      tls_key: "{{ ssl_key_slurp_path }}"
+      insecure_skip_verify: "{{ telegraf_influxdb2_insecure_skip_verify }}"
+  # Prometheus remote-write output config
+  - name: http
     options:
-      connection: "{{ telegraf_timescale_connection }}"
-      tags_as_foreign_keys: "{{ telegraf_timescale_tags_as_foreignkeys }}"
-      create_templates: "{{ telegraf_timescale_table_template }}"
-      schema: "{{ telegraf_timescale_schema }}"
-      tags_as_jsonb: "{{ telegraf_timescale_tags_as_jsonb }}"
-      fields_as_jsonb: "{{ telegraf_timescale_fields_as_jsonb }}"
-  # - name: prometheus_client
+      url: "{{ prometheus_default_url }}"
+      data_format: "{{ prometheus_data_format }}"
+      headers:
+        "{% for header, value in prometheus_http_headers %}{{ header }}: {{ value }}{% endfor %}"
 
+      # headers:
+      #   Content-Type: application/x-protobuf
+      #   Content-Encoding: snappy
+      #   X-Prometheus-Remote-Write-Version: 0.1.0
 
+  # Loki remote_write output config
+  - name: loki
+    options:
+      domain: "{{ loki_default_url }}"
+      endpoint: "{{ loki_endpoint }}"
+      timeout: "{{ loki_timeout }}"
+      metric_name_label: "{{ loki_metric_name_label }}"
+
+# Base telegraf configuration override
 telegraf_plugins_base:
-  - name: mem
   - name: system
   - name: cpu
     options:
       percpu: "true"
       totalcpu: "true"
       fielddrop:
-        - "time_*"
-  - name: disk
-    options:
-      ignore_fs:
-        - tmpfs
-        - devfs
-        - devtmpfs
-        - overlay
-        - iso9660
-        - ceph
-  - name: swap
-  - name: processes
-  - name: diskio
-    options:
-      skip_serial_number: "true"
-  - name: kernel
-  - name: kernel_vmstat
+        - time_*
+  - name: mem
   - name: net
   - name: nstat
     options:
+      proc_net_netstat: /proc/net/netstat
+      proc_net_snmp: /proc/net/snmp
       dump_zeros: "true"
   - name: netstat
-  - name: internal
+  - name: disk
+    options:
+      ignore_fs:
+        - autofs
+        - binfmt_misc
+        - bpf
+        - ceph
+        - cgroup2
+        - configfs
+        - debugfs
+        - devpts
+        - devtmpfs
+        - efivarfs
+        - hugetlbfs
+        - mqueue
+        - proc
+        - pstore
+        - ramfs
+        - rpc_pipefs
+        - securityfs
+        - sysfs
+        - tmpfs
+        - tracefs
+        - overlay
+        - iso9660
+  - name: diskio
+    options:
+      skip_serial_number: "false"
+      devices:
+        - sd*
+        - rbd*
+        - dm*
+        - nvme*
   - name: swap
+  - name: processes
+  - name: kernel
+  - name: kernel_vmstat
+  - name: internal
   - name: sysstat
     options:
-      interval: "30s"
-      sadc_path: "/usr/lib/sysstat/sadc"
+      interval: 30s
+      sadc_path: /usr/lib/sysstat/sadc
       activities:
-        - "DISK"
-        - "XDISK"
-        - "SNMP"
-        - "INT"
-        - "POWER"
+        - DISK
+        - XDISK
+        - SNMP
+        - INT
+        - POWER
       group: "true"
       options:
-        -C: "cpu"
-        -B: "paging"
-        -b: "io"
-        -d: "disk"
-        -H: "hugepages"
-        -I ALL: "interrupts"
-        -n ALL: "network"
-        -P ALL: "per_cpu"
-        -q: "queue"
-        -r ALL: "mem_util"
-        -S: "swap_util"
-        -u: "cpu_util"
-        -v: "inode"
-        -W: "swap"
-        -w: "task"
+        -C: cpu
+        -B: paging
+        -b: io
+        -d: disk
+        -H: hugepages
+        -I ALL: interrupts
+        -n ALL: network
+        -P ALL: per_cpu
+        -q: queue
+        -r ALL: mem_util
+        -S: swap_util
+        -u: cpu_util
+        -v: inode
+        -W: swap
+        -w: task
+  - name: syslog
+    options:
+      server: tcp://:6514
 
 
-telegraf_plugins: "{{ telegraf_plugins_base  +  telegraf_plugins_extra | default([]) }}"
+telegraf_plugins: "{{ telegraf_plugins_base + telegraf_plugins_extra | default([]) }}"
 
 telegraf_influxdata_base_url: "https://repos.influxdata.com"
-
-# enable snmp collection
-telegraf_enable_snmp: true
 
 snmp_pkgs:
   - snmp
@@ -204,5 +254,5 @@ metrics_pkgs:
 
 # Example Grok Patterns for use with logparser input
 # Works with default nginx 'main' log and 'fail2ban.log' configured by ansible-nginx role.
-nginx_accesslog_grokpattern: '%{CLIENT:client_ip} - %{NOTSPACE:ident} \[%{HTTPDATE:ts:ts-httpd}\] %{NOTSPACE:request_host:tag} "(?:%{WORD:verb:tag} %{NOTSPACE:request} (?:HTTP/%{NUMBER:http_version:float})?|%{DATA})" %{NUMBER:resp_code:tag} (?:%{NUMBER:resp_bytes:int}|-) "%{NOTSPACE:referrer}" "%{DATA:agent:tag}" (?:%{NUMBER:request_time}|-) (?:%{NUMBER:upstream_connect_time}|-) %{NOTSPACE:x_forwarded_for} %{NOTSPACE:upstream_cache_status:tag}'
-fail2ban_banlog_grokpattern: '%{TIMESTAMP_ISO8601:timestamp} %{WORD:log_src}.%{WORD:src_action} *\[%{INT:fail2ban_digit}\]: %{WORD:loglevel:tag} *\[%{NOTSPACE:service:tag}\] %{GREEDYDATA:ban_status:tag} %{IP:clientip:tag}'
+# nginx_accesslog_grokpattern: '%{CLIENT:client_ip} - %{NOTSPACE:ident} \[%{HTTPDATE:ts:ts-httpd}\] %{NOTSPACE:request_host:tag} "(?:%{WORD:verb:tag} %{NOTSPACE:request} (?:HTTP/%{NUMBER:http_version:float})?|%{DATA})" %{NUMBER:resp_code:tag} (?:%{NUMBER:resp_bytes:int}|-) "%{NOTSPACE:referrer}" "%{DATA:agent:tag}" (?:%{NUMBER:request_time}|-) (?:%{NUMBER:upstream_connect_time}|-) %{NOTSPACE:x_forwarded_for} %{NOTSPACE:upstream_cache_status:tag}'
+# fail2ban_banlog_grokpattern: '%{TIMESTAMP_ISO8601:timestamp} %{WORD:log_src}.%{WORD:src_action} *\[%{INT:fail2ban_digit}\]: %{WORD:loglevel:tag} *\[%{NOTSPACE:service:tag}\] %{GREEDYDATA:ban_status:tag} %{IP:clientip:tag}'
