@@ -1,17 +1,17 @@
 ---
-- name: Install any necessary dependencies [Debian/Ubuntu]
+- name: install-debian | Install any necessary dependencies [Debian/Ubuntu]
   ansible.builtin.apt:
     name: "{{ telegraf_dep_pkgs }}"
     state: present
     update_cache: true
     cache_valid_time: 3600
 
-- name: Remove old repo file
+- name: install-debian | Remove old repo file
   ansible.builtin.file:
     path: /etc/apt/sources.list.d/influxdata.list
     state: absent
 
-- name: Add InfluxData repository and GPG Key
+- name: install-debian | Add InfluxData repository and GPG Key
   ansible.builtin.deb822_repository:
     name: influxdata
     types: deb
@@ -23,19 +23,19 @@
     # architectures: "{{ dpkg_architecture }}"
     signed_by: "{{ telegraf_influxdata_base_url }}/influxdata-archive_compat.key"
 
-# - name: Import InfluxData GPG signing key [Debian/Ubuntu]
+# - name: install-debian | Import InfluxData GPG signing key [Debian/Ubuntu]
 #   apt_key:
 #     url: "{{ telegraf_influxdata_base_url }}/influxdb.key"
 #     state: present
 #   when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
 
-# - name: Add InfluxData repository [Debian/Ubuntu]
+# - name: install-debian | Add InfluxData repository [Debian/Ubuntu]
 #   apt_repository:
 #     repo: deb {{ telegraf_influxdata_base_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ telegraf_install_version }}
 #     state: present
 #   when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
 
-- name: Install Telegraf packages [Debian/Ubuntu] # noqa package-latest
+- name: install-debian | Install Telegraf packages [Debian/Ubuntu] # noqa package-latest
   ansible.builtin.apt:
     name: telegraf
     state: latest
@@ -43,12 +43,12 @@
     only_upgrade: true
   when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
 
-# - name: Download Telegraf package via URL [Debian/Ubuntu]
+# - name: install-debian | Download Telegraf package via URL [Debian/Ubuntu]
 #  command: curl -o /opt/telegraf-ansible-download.deb {{ telegraf_deb_pkg_url }}
 #  register: telegraf_pkg_download
 #  when: telegraf_deb_pkg_url is defined and telegraf_deb_pkg_url != None
 
-- name: Install downloaded Telegraf package [Debian/Ubuntu]
+- name: install-debian | Install downloaded Telegraf package [Debian/Ubuntu]
   ansible.builtin.apt:
     deb: "{{ telegraf_deb_pkg_url }}"
     state: present

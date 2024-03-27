@@ -32,7 +32,6 @@
     mode: "0755"
   when:
     - telegraf_runas_user != "telegraf"
-    - not telegraf_sysvinit_script.stat.exists
 
 - name: configure | Copy telegraf override configuration
   ansible.builtin.template:
@@ -41,7 +40,6 @@
     mode: "0755"
   when:
     - telegraf_runas_user != "telegraf"
-    - not telegraf_sysvinit_script.stat.exists
   register: telegraf_unit_file_updated
 
 - name: configure | Reload systemd configuration

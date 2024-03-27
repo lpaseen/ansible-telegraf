@@ -1,10 +1,10 @@
 ---
-- name: Install any necessary dependencies [RedHat/CentOS]
+- name: install-redhat | Install any necessary dependencies [RedHat/CentOS]
   ansible.builtin.yum:
     name: "{{ telegraf_dep_pkgs }}"
     state: present
 
-- name: Add InfluxData repository file [RHEL/CentOS]
+- name: install-redhat | Add InfluxData repository file [RHEL/CentOS]
   ansible.builtin.yum_repository:
     baseurl: "{{ telegraf_influxdata_base_url }}/rhel/$releasever/$basearch/stable"
     name: influxdb
@@ -12,14 +12,14 @@
     gpgkey: "{{ telegraf_influxdata_base_url }}/influxdb.key"
   when: telegraf_rpm_pkg_url is not defined or telegraf_rpm_pkg_url == None
 
-- name: Install Telegraf packages [RHEL/CentOS]
+- name: install-redhat | Install Telegraf packages [RHEL/CentOS]
   ansible.builtin.yum:
     name: telegraf
     state: present
     update_cache: true
   when: telegraf_rpm_pkg_url is not defined or telegraf_rpm_pkg_url == None
 
-- name: Install downloaded Telegraf package [RHEL/CentOS]
+- name: install-redhat | Install downloaded Telegraf package [RHEL/CentOS]
   ansible.builtin.yum:
     name: "{{ telegraf_rpm_pkg_url }}"
     state: present

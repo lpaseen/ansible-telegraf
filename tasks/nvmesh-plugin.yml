@@ -1,6 +1,6 @@
 ---
-- name: Copy nvmesh plugin
-  copy:
+- name: nvmesh-plugin | Copy nvmesh plugin
+  ansible.builtin.copy:
     src: nvmesh_telegraf.py
     dest: /etc/opt/NVMesh/nvmesh_telegraf.py
     owner: root
