@@ -1,6 +1,6 @@
 ---
-- name: include os specific vars
-  include_vars: "{{ item }}"
+- name: Include os specific vars
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - "{{ ansible_distribution }}{{ ansible_distribution_major_version }}.yml"
     - "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
@@ -8,23 +8,20 @@
     - "{{ ansible_distribution }}.yml"
   tags:
     - always
-- import_tasks: install.yml
+- name: Import installation tasks
+  ansible.builtin.import_tasks: install.yml
   tags:
     - telegraf
     - telegraf-install
-
-- import_tasks: nvmesh-plugin.yml
-  when: "'nvmesh' in group_names"
-  tags:
-    - telegraf-nvmesh
-
-- import_tasks: statscollection.yml
+- name: Import SNMP tasks
+  ansible.builtin.import_tasks: statscollection.yml
   tags:
     - telegraf-snmp
-
-- import_tasks: configure.yml
+- name: Import configuration tasks
+  ansible.builtin.import_tasks: configure.yml
   tags:
     - telegraf
     - telegraf-config
 
-- import_tasks: start.yml
+- name: Import service tasks
+  ansible.builtin.import_tasks: start.yml

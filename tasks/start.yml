@@ -1,37 +1,43 @@
+---
+- name: start | Flush handlers
+  ansible.builtin.meta: flush_handlers
 
-- meta: flush_handlers
-
-- name: Restart the telegraf service
-  systemd:
+- name: start | Restart the telegraf service
+  ansible.builtin.systemd:
     name: telegraf
     state: "{% if telegraf_require_restart | default(False) %}restarted{% else %}started{% endif %}"
-    enabled: yes
+    enabled: true
   register: telegraf_started
   when:
     - telegraf_start_service
 
-- name: pause
-  pause:
+- name: start | Pause for start
+  ansible.builtin.pause:
     seconds: 10
   when:
     - telegraf_start_service
     - telegraf_started.changed
 
-- name: check status
-  command: service telegraf status
+- name: start | Check service status
+  ansible.builtin.command: service telegraf status
   register: telegraf_start_attempt
-  when: telegraf_start_service
-  changed_when: False
+  changed_when: telegraf_start_attempt is changed
+  when:
+    - telegraf_start_service
+    - telegraf_started.changed
 
-- set_fact:
+- name: start | Set telegraf_status gather_fact
+  ansible.builtin.set_fact:
     telegraf_status: "{{ telegraf_start_attempt | regex_search('Active: active (running)', multiline=True, ignorecase=True) }}"
 
-- name: Get telegraf journald logs if service does not appear to be up
-  shell: "journalctl -u telegraf --no-page --since '1 min ago'"
+- name: start | Get telegraf journald logs if service does not appear to be up
+  ansible.builtin.command: journalctl -u telegraf --no-page --since '1 min ago'
   register: telegraf_journal
+  changed_when: telegraf_journal.changed
   when: telegraf_status is false
 
-- debug:
+- name: start | Print service output
+  ansible.builtin.debug:
     var: |
       telegraf_journal.stdout_lines
   when: telegraf_start_attempt.failed

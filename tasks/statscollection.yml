@@ -1,35 +1,34 @@
 ---
 - name: Install system accounting and reporting packages
-  package:
+  ansible.builtin.package:
     name: "{{ metrics_pkgs }}"
     state: present
 
 - name: Install SNMP Packages
-  package:
+  ansible.builtin.package:
     name: "{{ snmp_pkgs }}"
     state: present
-  when:
+  ansible.builtin.when:
     - telegraf_enable_snmp
 
 - name: Install SNMP MIBs
-  copy:
-    src: "mibs/"
-    dest: "/var/lib/snmp/mibs/ietf/"
-    mode: 0644
-  when:
-    telegraf_enable_snmp
+  ansible.builtin.copy:
+    src: mibs/
+    dest: /var/lib/snmp/mibs/ietf/
+    mode: "0644"
+  when: telegraf_enable_snmp
 
-- name: enable sysstat logging
-  lineinfile:
+- name: Enable sysstat logging
+  ansible.builtin.lineinfile:
     path: /etc/default/sysstat
-    regexp: '^ENABLED.*'
+    regexp: ^ENABLED.*
     line: ENABLED="true"
   notify: restart sysstat
   when:
     - ansible_os_family == "Debian"
 
 - name: Start sysstat service
-  service:
+  ansible.builtin.service:
     name: sysstat
-    enabled: yes
+    enabled: true
     state: started

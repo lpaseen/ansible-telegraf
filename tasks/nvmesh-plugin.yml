@@ -1,7 +1,8 @@
+---
 - name: Copy nvmesh plugin
   copy:
     src: nvmesh_telegraf.py
     dest: /etc/opt/NVMesh/nvmesh_telegraf.py
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
