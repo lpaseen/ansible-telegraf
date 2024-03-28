@@ -1,7 +1,7 @@
-# Whether or not the playbook is run locally
-# This should only be set in the Vagrantfile and not modified elsewhere
-is_vagrant: false
+---
 
+telegraf_influxdata_base_url: https://repos.influxdata.com
+telegraf_enable_snmp: false
 # If yes, service will be started. Will not be started if set to no.
 telegraf_start_service: true
 telegraf_start_delay: 6
@@ -17,61 +17,33 @@ telegraf_configuration_dir: /etc/telegraf
 telegraf_install_version: stable
 
 # The user and group telegraf should run under (should be set to telegraf unless needed otherwise)
-telegraf_runas_user: telegraf
-telegraf_runas_group: telegraf
-
-# Configuration Template
-telegraf_configuration_template: telegraf.conf.j2
+telegraf_runas_user: root
+telegraf_runas_group: root
 
 # Configuration Variables
 telegraf_tags:
 telegraf_aws_tags: false
 telegraf_aws_tags_prefix:
+# Configuration Template
+telegraf_configuration_template: telegraf.conf.j2
 
-telegraf_agent_interval: 15s
-telegraf_round_interval: "true"
-telegraf_metric_batch_size: "1000"
-telegraf_metric_buffer_limit: "10000"
-
-telegraf_collection_jitter: 5s
-telegraf_flush_interval: 5s
-telegraf_flush_jitter: 5s
-telegraf_debug: "false"
-telegraf_quiet: "false"
-telegraf_hostname: "{{ ansible_hostname | default('localhost') }}"
-telegraf_omit_hostname: "false"
-
-# defaults related to influxdb output plugin
-influxdb_server_ip: 0.0.0.0
-telegraf_influxdb_default_url: "http://{{ influxdb_server_ip }}:8086"
-telegraf_influxdb_additional_urls: []
-telegraf_influxdb_urls: "{{ [telegraf_influxdb_default_url] + telegraf_influxdb_additional_urls | default([]) }}"
-telegraf_influxdb_database: telegraf
-telegraf_influxdb_precision: s
-telegraf_influxdb_retention_policy: autogen
-telegraf_influxdb_write_consistency: any
-telegraf_influxdb_ssl_ca:
-telegraf_influxdb_ssl_cert:
-telegraf_influxdb_ssl_key:
-telegraf_influxdb_insecure_skip_verify:
-telegraf_influxdb_timeout: 30s
-telegraf_influxdb_username:
-telegraf_influxdb_password:
-telegraf_influxdb_user_agent:
-telegraf_influxdb_udp_payload:
-# telegraf_install_url: https://dl.influxdata.com/telegraf/nightlies/telegraf_nightly_amd64.deb
-telegraf_rpm_pkg_url: https://dl.influxdata.com/telegraf/releases/telegraf-1.25.2-1.x86_64.rpm
-telegraf_deb_pkg_url: https://dl.influxdata.com/telegraf/releases/telegraf_1.25.2-1_amd64.deb
-
-
-percpu: "true"
-telegraf_enable_snmp: false
-influxdb2_org: default
+telegraf_agent_configs:
+  interval: 15s
+  round_interval: "true"
+  metric_batch_size: 10000
+  metric_buffer_limit: 50000
+  collection_jitter: 2s
+  flush_interval: 10s
+  flush_jitter: 5s
+  debug: "false"
+  quiet: "true"
+  omit_hostname: "false"
+  hostname: "{{ ansible_hostname }}"
 
 #### Telegraf InfluxDB v2 Output
-influxdb2_server_ip: 0.0.0.0
-telegraf_influxdb2_default_url: "http://{{ influxdb2_server_ip }}:8086"
-telegraf_influxdb2_organization: "{{ influxdb2_org }}"
+influxdb2_server_ip: "0.0.0.0"
+telegraf_influxdb2_default_url: http://{{ influxdb2_server_ip }}:8086
+telegraf_influxdb2_organization: constructorfleet
 telegraf_influxdb2_bucket: telegraf
 telegraf_influxdb2_timeout: 30s
 telegraf_influxdb2_bucket_tag: ""
@@ -81,29 +53,47 @@ telegraf_influxdb2_http_proxy: ""
 telegraf_influxdb2_user_agent: telegraf
 telegraf_influxdb2_content_encoding: gzip
 telegraf_influxdb2_influx_uint_support: "false"
-telegraf_influxdb2_tls_cert: "{{ ssl_certpath }}"
-telegraf_influxdb2_tls_key: "{{ ssl_keypath }}"
-telegraf_influxdb2_insecure_skip_verify: "false"
+telegraf_influxdb2_tls_cert: "{{ ssl_certpath | default('/etc/ssl/certs/my.cert') }}"
+telegraf_influxdb2_tls_key: "{{ ssl_keypath | default('/etc/private/ssl/my.key') }}"
+telegraf_influxdb2_insecure_skip_verify: "true"
 
-# Telegraf Prometheus / Mimir remote write Output
-prometheus_server_ip: 10.0.10.30
-prometheus_default_url: "http://{{ prometheus_server_ip }}:9009/api/v1/push"
-prometheus_data_format: prometheus_remote_write
-prometheus_http_headers:
-  - header: Content-Type
-    value: application/x-protobuf
-  - header: Content-Encoding
-    value: snappy
-  - header: X-Prometheus-Remote-Write-Version
-    value: 0.1.0
+### EXAMPLE CONFIGS FORR LOKI / PROMETHEUS OUTPUTS
 
-# Telegraf Loki / Mimir remote write Output
-loki_server_ip: 10.0.10.30
-loki_default_url: "http://{{ loki_server_ip }}:3100"
-loki_endpoint: loki/api/v1/push
-loki_timeout: 5s
-loki_metric_name_label: "{{ ansible_hostname }}"
+# # Telegraf Prometheus / Mimir remote write Output
+# prometheus_server_ip: 0.0.0.0
+# prometheus_default_url: http://{{ prometheus_server_ip }}:9009/api/v1/push
+# prometheus_data_format: prometheusremotewrite
+# prometheus_http_headers:
+#   - header: Content-Type
+#     value: application/x-protobuf
+#   - header: Content-Encoding
+#     value: snappy
+#   - header: X-Prometheus-Remote-Write-Version
+#     value: "0.1.0"
+#
+# # Prometheus remote-write output config
+# - name: http
+#   options:
+#     url: "{{ prometheus_default_url }}"
+#     data_format: "{{ prometheus_data_format }}"
+#     headers:
+#       Content-Type: application/x-protobuf
+#       Content-Encoding: snappy
+#       X-Prometheus-Remote-Write-Version: "0.1.0"
+#
+# # Telegraf Loki / Mimir remote write Output
+# loki_server_ip: 0.0.0.0
+# loki_default_url: http://{{ loki_server_ip }}:3100
+# loki_endpoint: /loki/api/v1/push
+# loki_timeout: 5s
+# loki_metric_name_label: __name
 
+# # Loki remote_write output config
+# - name: loki
+#   options:
+#     domain: "{{ loki_default_url }}"
+#     endpoint: "{{ loki_endpoint }}"
+#     timeout: "{{ loki_timeout }}"
 
 telegraf_output_plugins:
   # influxdb v2 output config
@@ -123,23 +113,6 @@ telegraf_output_plugins:
       tls_cert: "{{ ssl_cert_slurp_path }}"
       tls_key: "{{ ssl_key_slurp_path }}"
       insecure_skip_verify: "{{ telegraf_influxdb2_insecure_skip_verify }}"
-  # Prometheus remote-write output config
-  - name: http
-    options:
-      url: "{{ prometheus_default_url }}"
-      data_format: "{{ prometheus_data_format }}"
-      headers:
-        Content-Type: application/x-protobuf
-        Content-Encoding: snappy
-        X-Prometheus-Remote-Write-Version: 0.1.0
-
-  # Loki remote_write output config
-  - name: loki
-    options:
-      domain: "{{ loki_default_url }}"
-      endpoint: "{{ loki_endpoint }}"
-      timeout: "{{ loki_timeout }}"
-      metric_name_label: "{{ loki_metric_name_label }}"
 
 # Base telegraf configuration override
 telegraf_plugins_base:
@@ -198,7 +171,8 @@ telegraf_plugins_base:
   - name: internal
   - name: sysstat
     options:
-      interval: 30s
+      sadc_interval: 1s
+      interval: 15s
       sadc_path: /usr/lib/sysstat/sadc
       activities:
         - DISK
@@ -227,16 +201,12 @@ telegraf_plugins_base:
     options:
       server: tcp://:6514
 
-
 telegraf_plugins: "{{ telegraf_plugins_base + telegraf_plugins_extra | default([]) }}"
-
-telegraf_influxdata_base_url: "https://repos.influxdata.com"
 
 snmp_pkgs:
   - snmp
   - libsnmp-base
   - snmp-mibs-downloader
-
 
 metrics_pkgs:
   - sysstat

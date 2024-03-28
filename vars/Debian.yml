@@ -12,4 +12,3 @@ metrics_pkgs:
   - ifstat
   - ipmitool
   - lm-sensors
-
