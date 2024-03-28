@@ -15,5 +15,9 @@
     - name: start | Print service output
       ansible.builtin.debug:
         msg: |
-          ansible_failed_task
-          ansible_failed_result
+          "{{ ansible_failed_result.msg }}"
+    - name: start | Print systemd log
+      ansible.builtin.command:
+        cmd: journalctl -u telegraf -n25 --no-pager
+      register: journald_output
+      changed_when: journald_output is defined
