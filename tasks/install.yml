@@ -1,8 +1,10 @@
 ---
-- name: Import RHEL installation tasks
-  ansible.builtin.import_tasks: install-redhat.yml
+- name: install | Include RHEL tasks
+  ansible.builtin.include_tasks:
+    file: install-redhat.yml
   when: ansible_os_family == "RedHat"
 
-- name: Import Debian/Ubuntu installation tasks
-  ansible.builtin.import_tasks: install-debian.yml
+- namme: install | Include Debian tasks
+  ansible.builtin.include_tasks:
+    file: install-debian.yml
   when: ansible_os_family == "Debian"

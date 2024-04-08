@@ -1,9 +1,9 @@
 ---
-- name: "Configure Telegraf metrics collection/transport service"
+- name: Configure Telegraf metrics collection/transport service
   hosts: all
   remote_user: root
-  gather_facts: yes
+  gather_facts: true
 
   tasks:
-    - import_role:
+    - ansible.builtin.include_role:
         name: telegraf
