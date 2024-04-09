@@ -1,17 +1,16 @@
 ---
-
 - name: restart telegraf
-  set_fact:
-    telegraf_require_restart: True
+  ansible.builtin.set_fact:
+    telegraf_require_restart: true
 
 - name: restart rsyslog
-  systemd:
+  ansible.builtin.systemd:
     name: rsyslog
     state: restarted
-    enabled: yes
+    enabled: true
 
 - name: restart sysstat
-  systemd:
+  ansible.builtin.systemd:
     name: sysstat
     state: restarted
-    enabled: yes
+    enabled: true
