@@ -4,7 +4,7 @@
     file: install-redhat.yml
   when: ansible_os_family == "RedHat"
 
-- namme: install | Include Debian tasks
+- name: install | Include Debian tasks
   ansible.builtin.include_tasks:
     file: install-debian.yml
   when: ansible_os_family == "Debian"
