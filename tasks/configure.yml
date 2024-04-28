@@ -40,11 +40,15 @@
     mode: "0755"
   when:
     - telegraf_runas_user != "telegraf"
+  notify:
+    - restart telegraf
   register: telegraf_unit_file_updated
 
 - name: configure | Reload systemd configuration
   ansible.builtin.systemd_service:
     daemon_reload: true
+  notify:
+    - restart telegraf
   when:
     - telegraf_unit_file_updated is defined
     - telegraf_unit_file_updated.changed

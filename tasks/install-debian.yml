@@ -23,35 +23,29 @@
     # architectures: "{{ dpkg_architecture }}"
     signed_by: "{{ telegraf_influxdata_base_url }}/influxdata-archive_compat.key"
 
-# - name: install-debian | Import InfluxData GPG signing key [Debian/Ubuntu]
-#   apt_key:
-#     url: "{{ telegraf_influxdata_base_url }}/influxdb.key"
-#     state: present
-#   when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
-
-# - name: install-debian | Add InfluxData repository [Debian/Ubuntu]
-#   apt_repository:
-#     repo: deb {{ telegraf_influxdata_base_url }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ telegraf_install_version }}
-#     state: present
-#   when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
-
 - name: install-debian | Install Telegraf packages [Debian/Ubuntu] # noqa package-latest
   ansible.builtin.apt:
     name: telegraf
     state: latest
     update_cache: true
     only_upgrade: true
+  register: telegraf_pkg_install
+  until: telegraf_pkg_install is not failed
+  retries: 10
+  timeout: 60
+  delay: 10
   when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
-
-# - name: install-debian | Download Telegraf package via URL [Debian/Ubuntu]
-#  command: curl -o /opt/telegraf-ansible-download.deb {{ telegraf_deb_pkg_url }}
-#  register: telegraf_pkg_download
-#  when: telegraf_deb_pkg_url is defined and telegraf_deb_pkg_url != None
+  notify: restart telegraf
 
 - name: install-debian | Install downloaded Telegraf package [Debian/Ubuntu]
   ansible.builtin.apt:
     deb: "{{ telegraf_deb_pkg_url }}"
     state: present
     force: true
+  register: telegraf_dpkg_install
+  until: telegraf_dpkg_install is not failed
+  retries: 10
+  timeout: 60
+  delay: 10
   when: telegraf_deb_pkg_url is defined and telegraf_deb_pkg_url != None
   notify: restart telegraf

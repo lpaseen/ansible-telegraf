@@ -3,6 +3,9 @@
   ansible.builtin.package:
     name: "{{ metrics_pkgs }}"
     state: present
+  notify:
+    - restart_sysstat
+    - restart_telegraf
 
 - name: statscollection | Install SNMP Packages
   ansible.builtin.package:
@@ -10,6 +13,8 @@
     state: present
   when:
     - telegraf_enable_snmp
+  notify:
+    - restart_telegraf
 
 - name: statscollection | Install SNMP MIBs
   ansible.builtin.copy:
@@ -17,13 +22,17 @@
     dest: /var/lib/snmp/mibs/ietf/
     mode: "0644"
   when: telegraf_enable_snmp
+  notify:
+    - restart_telegraf
 
 - name: statscollection | Enable sysstat logging
   ansible.builtin.lineinfile:
     path: /etc/default/sysstat
     regexp: ^ENABLED.*
     line: ENABLED="true"
-  notify: restart sysstat
+  notify:
+    - restart_sysstat
+    - restart_telegraf
   when:
     - ansible_os_family == "Debian"
 

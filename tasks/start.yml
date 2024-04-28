@@ -3,21 +3,13 @@
   ansible.builtin.meta: flush_handlers
 
 - name: start | Start or Restart telegraf service
-  block:
-    - name: start | Restart the telegraf service
-      ansible.builtin.systemd:
-        name: telegraf
-        state: "{% if telegraf_require_restart | default(False) %}restarted{% else %}started{% endif %}"
-        enabled: true
-      register: telegraf_started
-      until: telegraf_started is not failed
-  rescue:
-    - name: start | Print service output
-      ansible.builtin.debug:
-        msg: |
-          "{{ ansible_failed_result.msg }}"
-    - name: start | Print systemd log
-      ansible.builtin.command:
-        cmd: journalctl -u telegraf -n25 --no-pager
-      register: journald_output
-      changed_when: journald_output is defined
+  ansible.builtin.systemd:
+    name: telegraf
+    state: "{{ 'restarted' if (telegraf_require_restart | default(false)) else 'started' }}"
+    enabled: true
+    daemon_reload: true
+  register: telegraf_started
+  until: telegraf_started is not failed
+  retries: 10
+  timeout: 60
+  delay: 10
