@@ -3,6 +3,14 @@
   ansible.builtin.set_fact:
     telegraf_require_restart: true
 
+# - name: restart rsyslog
+#   ansible.builtin.set_fact:
+#     rsyslog_require_restart: true
+
+# - name: restart sysstat
+#   ansible.builtin.set_fact:
+#     sysstat_require_restart: true
+
 - name: restart rsyslog
   ansible.builtin.systemd:
     name: rsyslog
