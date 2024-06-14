@@ -1,6 +1,6 @@
 ---
 - name: install-redhat | Install any necessary dependencies [RedHat/CentOS]
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ telegraf_dep_pkgs }}"
     state: present
 
@@ -13,7 +13,7 @@
   when: telegraf_rpm_pkg_url is not defined or telegraf_rpm_pkg_url == None
 
 - name: install-redhat | Install Telegraf packages [RHEL/CentOS]
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: telegraf
     state: latest
     update_cache: true
@@ -27,7 +27,7 @@
   notify: restart telegraf
 
 - name: install-redhat | Install downloaded Telegraf package [RHEL/CentOS]
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ telegraf_rpm_pkg_url }}"
     state: present
     allow_downgrade: true
