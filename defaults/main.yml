@@ -41,7 +41,7 @@ telegraf_agent_configs:
   hostname: "{{ ansible_hostname }}"
 
 #### Telegraf InfluxDB v2 Output
-influxdb2_server_ip: "0.0.0.0"
+influxdb2_server_ip: 0.0.0.0
 telegraf_influxdb2_default_url: http://{{ influxdb2_server_ip }}:8086
 telegraf_influxdb2_organization: constructorfleet
 telegraf_influxdb2_bucket: telegraf

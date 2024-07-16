@@ -24,7 +24,7 @@
   timeout: 60
   delay: 10
   when: telegraf_rpm_pkg_url is not defined or telegraf_rpm_pkg_url == None
-  notify: restart telegraf
+  notify: Restart Telegraf
 
 - name: install-redhat | Install downloaded Telegraf package [RHEL/CentOS]
   ansible.builtin.dnf:
@@ -38,4 +38,4 @@
   timeout: 60
   delay: 10
   when: telegraf_rpm_pkg_url is defined and telegraf_rpm_pkg_url != None
-  notify: restart telegraf
+  notify: Restart Telegraf
