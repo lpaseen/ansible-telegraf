@@ -34,5 +34,4 @@ No other Ansible dependencies are required. This role was tested and developed w
 Example Playbook
 ----------------
 
-An example playbook is included in the `test.yml` file. 
-
+An example playbook is included in the `test.yml` file... 
