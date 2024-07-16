@@ -36,7 +36,7 @@
   timeout: 60
   delay: 10
   when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
-  notify: restart telegraf
+  notify: Restart Telegraf
 
 - name: install-debian | Install downloaded Telegraf package [Debian/Ubuntu]
   ansible.builtin.apt:
@@ -49,4 +49,4 @@
   timeout: 60
   delay: 10
   when: telegraf_deb_pkg_url is defined and telegraf_deb_pkg_url != None
-  notify: restart telegraf
+  notify: Restart Telegraf
