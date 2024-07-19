@@ -18,9 +18,8 @@
     enabled: true
     state: present
     uris: "{{ telegraf_influxdata_base_url }}/{{ ansible_distribution | lower }}"
-    suites: "{{ ansible_distribution_release }}"
+    suites: "{{ ansible_distribution_release | lower }}"
     components: "{{ telegraf_install_version }}"
-    # architectures: "{{ dpkg_architecture }}"
     signed_by: "{{ telegraf_influxdata_base_url }}/influxdata-archive_compat.key"
 
 - name: install-debian | Install Telegraf packages [Debian/Ubuntu] # noqa package-latest
