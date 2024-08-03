@@ -1,4 +1,8 @@
 ---
+- name: install | Wait for locks
+  ansible.builtin.include_tasks:
+    file: wait_for_locks.yml
+
 - name: install | Include RHEL tasks
   ansible.builtin.include_tasks:
     file: install-redhat.yml
