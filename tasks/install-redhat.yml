@@ -20,9 +20,6 @@
     update_only: true
   register: telegraf_pkg_install
   until: telegraf_pkg_install is not failed
-  retries: 10
-  timeout: 60
-  delay: 10
   when: telegraf_rpm_pkg_url is not defined or telegraf_rpm_pkg_url == None
   notify: Restart Telegraf
 
@@ -34,8 +31,5 @@
     disable_gpg_check: true
   register: telegraf_rpm_install
   until: telegraf_rpm_install is not failed
-  retries: 10
-  timeout: 60
-  delay: 10
   when: telegraf_rpm_pkg_url is defined and telegraf_rpm_pkg_url != None
   notify: Restart Telegraf
