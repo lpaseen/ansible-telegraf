@@ -5,7 +5,7 @@
 - name: start | Start or Restart telegraf service
   ansible.builtin.systemd:
     name: telegraf
-    state: "{{ 'restarted' if (telegraf_require_restart | default(false)) else 'started' }}"
+    state: restarted
     enabled: true
     daemon_reload: true
   register: telegraf_started
