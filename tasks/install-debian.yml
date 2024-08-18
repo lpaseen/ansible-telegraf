@@ -4,7 +4,6 @@
     name: "{{ telegraf_dep_pkgs }}"
     state: present
     update_cache: true
-    cache_valid_time: 3600
 
 - name: install-debian | Remove old repo file
   ansible.builtin.file:
@@ -31,9 +30,6 @@
     autoclean: true
   register: telegraf_pkg_install
   until: telegraf_pkg_install is not failed
-  retries: 10
-  timeout: 60
-  delay: 10
   when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
   notify: Restart Telegraf
 
@@ -44,8 +40,5 @@
     force: true
   register: telegraf_dpkg_install
   until: telegraf_dpkg_install is not failed
-  retries: 10
-  timeout: 60
-  delay: 10
   when: telegraf_deb_pkg_url is defined and telegraf_deb_pkg_url != None
   notify: Restart Telegraf
