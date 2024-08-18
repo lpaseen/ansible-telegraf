@@ -31,9 +31,6 @@
     autoclean: true
   register: telegraf_pkg_install
   until: telegraf_pkg_install is not failed
-  retries: 10
-  timeout: 60
-  delay: 10
   when: telegraf_deb_pkg_url is not defined or telegraf_deb_pkg_url == None
   notify: Restart Telegraf
 
@@ -44,8 +41,5 @@
     force: true
   register: telegraf_dpkg_install
   until: telegraf_dpkg_install is not failed
-  retries: 10
-  timeout: 60
-  delay: 10
   when: telegraf_deb_pkg_url is defined and telegraf_deb_pkg_url != None
   notify: Restart Telegraf
