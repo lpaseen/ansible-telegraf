@@ -32,8 +32,11 @@
     apply:
       tags:
         - telegraf-config
+        - telegraf-install
   tags:
     - telegraf
+    - telegraf-conf
+    - telegraf-systemd
 
 - name: Import service tasks
   ansible.builtin.include_tasks:
