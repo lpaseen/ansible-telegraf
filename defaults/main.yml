@@ -12,6 +12,7 @@ telegraf_template_configuration: true
 # Path for finding Telegraf data. Added for backwards-compatibility.
 telegraf_binary_path: /usr/bin/telegraf
 telegraf_configuration_dir: /etc/telegraf
+telegraf_config_file: telegraf.conf
 
 # Channel of Telegraf to install
 telegraf_install_version: stable

@@ -10,6 +10,3 @@
     daemon_reload: true
   register: telegraf_started
   until: telegraf_started is not failed
-  retries: 10
-  timeout: 60
-  delay: 10

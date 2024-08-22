@@ -2,7 +2,7 @@
 - name: configure | Set templatized Telegraf configuration
   ansible.builtin.template:
     src: "{{ telegraf_configuration_template }}"
-    dest: "{{ telegraf_configuration_dir }}/telegraf.conf"
+    dest: "{{ telegraf_configuration_dir }}/{{ telegraf_config_file | default('telegraf.conf') }}"
     force: true
     backup: false
     owner: telegraf
@@ -11,7 +11,8 @@
   when: telegraf_template_configuration
   notify:
     - Restart Telegraf
-
+  tags:
+    - telegraf-conf
 # - name: configure | Test for sysvinit script
 #   ansible.builtin.stat:
 #     path: /etc/init.d/telegraf
@@ -25,30 +26,34 @@
 #   ansible.builtin.command: sed -i s/GROUP=.*/GROUP={{ telegraf_runas_group }}/ /etc/init.d/telegraf
 #   when: telegraf_runas_group != "telegraf" and telegraf_sysvinit_script.stat.exists
 
-- name: configure | Create telegraf service.d directory
-  ansible.builtin.file:
-    path: /etc/systemd/system/telegraf.service.d
-    state: directory
-    mode: "0755"
-  when:
-    - telegraf_runas_user != "telegraf"
+- name: configure | Set up telegraf service
+  tags:
+    - telegraf-systemd
+  block:
+    - name: configure | Create telegraf service.d directory
+      ansible.builtin.file:
+        path: /etc/systemd/system/telegraf.service.d
+        state: directory
+        mode: "0755"
+      when:
+        - telegraf_runas_user != "telegraf"
 
-- name: configure | Copy telegraf override configuration
-  ansible.builtin.template:
-    src: systemd/system/telegraf.service.d/override.conf.j2
-    dest: /etc/systemd/system/telegraf.service.d/override.conf
-    mode: "0755"
-  when:
-    - telegraf_runas_user != "telegraf"
-  notify:
-    - Restart Telegraf
-  register: telegraf_unit_file_updated
+    - name: configure | Copy telegraf override configuration
+      ansible.builtin.template:
+        src: systemd/system/telegraf.service.d/override.conf.j2
+        dest: /etc/systemd/system/telegraf.service.d/override.conf
+        mode: "0755"
+      when:
+        - telegraf_runas_user != "telegraf"
+      notify:
+        - Restart Telegraf
+      register: telegraf_unit_file_updated
 
-- name: configure | Reload systemd configuration
-  ansible.builtin.systemd_service:
-    daemon_reload: true
-  notify:
-    - Restart Telegraf
-  when:
-    - telegraf_unit_file_updated is defined
-    - telegraf_unit_file_updated.changed
+    - name: configure | Reload systemd configuration
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+      notify:
+        - Restart Telegraf
+      when:
+        - telegraf_unit_file_updated is defined
+        - telegraf_unit_file_updated.changed
