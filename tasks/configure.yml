@@ -12,7 +12,7 @@
   notify:
     - Restart Telegraf
   tags:
-    - telegraf-conf
+    - telegraf-config
 # - name: configure | Test for sysvinit script
 #   ansible.builtin.stat:
 #     path: /etc/init.d/telegraf
