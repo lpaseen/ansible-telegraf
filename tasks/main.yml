@@ -7,6 +7,7 @@
     - "{{ ansible_os_family }}.yml"
   tags:
     - always
+    - telegraf
 
 - name: Import installation tasks
   ansible.builtin.include_tasks:
@@ -35,8 +36,6 @@
         - telegraf-install
   tags:
     - telegraf
-    - telegraf-conf
-    - telegraf-systemd
 
 - name: Import service tasks
   ansible.builtin.include_tasks:
