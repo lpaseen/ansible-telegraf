@@ -16,7 +16,7 @@
       tags:
         - telegraf-install
   tags:
-    - telegraf
+    - telegraf-install
 
 - name: Include statscollection tasks
   ansible.builtin.include_tasks:
@@ -25,8 +25,7 @@
       tags:
         - telegraf-snmp
   tags:
-    - telegraf
-
+    - telegraf-snmp
 - name: Import configuration tasks
   ansible.builtin.include_tasks:
     file: configure.yml
@@ -35,8 +34,8 @@
         - telegraf-config
         - telegraf-install
   tags:
-    - telegraf
-
+    - telegraf-config
+    - telegraf-install
 - name: Import service tasks
   ansible.builtin.include_tasks:
     file: start.yml
@@ -45,4 +44,5 @@
         - telegraf-install
         - telegraf-config
   tags:
-    - telegraf
+    - telegraf-config
+    - telegraf-install
