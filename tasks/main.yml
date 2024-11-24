@@ -9,6 +9,11 @@
     - always
     - telegraf
 
+- name: include infisical credentials
+  ansible.builtin.include_vars: "{{ item }}"
+  loop:
+    - "{{ role_path }}/vars/infisical.yml"
+ 
 - name: Import installation tasks
   ansible.builtin.include_tasks:
     file: install.yml

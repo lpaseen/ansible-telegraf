@@ -1,6 +1,7 @@
 ---
 
 telegraf_influxdata_base_url: https://repos.influxdata.com
+
 telegraf_enable_snmp: false
 # If yes, service will be started. Will not be started if set to no.
 telegraf_start_service: true
@@ -43,9 +44,14 @@ telegraf_agent_configs:
 
 #### Telegraf InfluxDB v2 Output
 influxdb2_server_ip: 0.0.0.0
-telegraf_influxdb2_default_url: http://{{ influxdb2_server_ip }}:8086
-telegraf_influxdb2_organization: constructorfleet
-telegraf_influxdb2_bucket: telegraf
+infisical_telegraf_influxdb2_default_url: "{{ lookup('infisical.vault.read_secrets', universal_auth_client_id=infisical_universal_auth_client_id, universal_auth_client_secret=infisical_universal_auth_client_secret, project_id=infisical_project_id, path='/COMMON', env_slug=infisical_env, secret_name='INFLUXDB2_URL', url=infisical_url) }}"
+infisical_telegraf_influxdb2_token: "{{ lookup('infisical.vault.read_secrets', universal_auth_client_id=infisical_universal_auth_client_id, universal_auth_client_secret=infisical_universal_auth_client_secret, project_id=infisical_project_id, path='/COMMON', env_slug=infisical_env, secret_name='INFLUXDB2_TOKEN', url=infisical_url) }}"
+infisical_telegraf_influxdb2_org: "{{ lookup('infisical.vault.read_secrets', universal_auth_client_id=infisical_universal_auth_client_id, universal_auth_client_secret=infisical_universal_auth_client_secret, project_id=infisical_project_id, path='/COMMON', env_slug=infisical_env, secret_name='INFLUXDB2_ORG', url=infisical_url) }}"
+infisical_telegraf_influxdb2_bucket: "{{ lookup('infisical.vault.read_secrets', universal_auth_client_id=infisical_universal_auth_client_id, universal_auth_client_secret=infisical_universal_auth_client_secret, project_id=infisical_project_id, path='/COMMON', env_slug=infisical_env, secret_name='INFLUXDB2_BUCKET', url=infisical_url) }}"
+telegraf_influxdb2_default_url: "{{ infisical_telegraf_influxdb2_default_url.value }}"
+telegraf_influxdb2_token: "{{ infisical_telegraf_influxdb2_token.value }}"
+telegraf_influxdb2_organization: "{{ infisical_telegraf_influxdb2_org.value }}"
+telegraf_influxdb2_bucket: "{{ infisical_telegraf_influxdb2_bucket.value }}"
 telegraf_influxdb2_timeout: 30s
 telegraf_influxdb2_bucket_tag: ""
 telegraf_influxdb2_exclude_bucket_tag: "false"
@@ -102,7 +108,7 @@ telegraf_output_plugins:
     options:
       urls:
         - "{{ telegraf_influxdb2_default_url }}"
-      token: "{{ vault_influxdb2_telegraf_token }}"
+      token: "{{ telegraf_influxdb2_token }}"
       organization: "{{ telegraf_influxdb2_organization }}"
       bucket: "{{ telegraf_influxdb2_bucket }}"
       exclude_bucket_tag: "{{ telegraf_influxdb2_exclude_bucket_tag }}"
@@ -111,8 +117,8 @@ telegraf_output_plugins:
       content_encoding: "{{ telegraf_influxdb2_content_encoding }}"
       influx_uint_support: "{{ telegraf_influxdb2_influx_uint_support }}"
       # tls_ca: "/etc/telegraf/ca.pem"
-      tls_cert: "{{ ssl_cert_slurp_path }}"
-      tls_key: "{{ ssl_key_slurp_path }}"
+      #tls_cert: "{{ ssl_cert_slurp_path }}"
+      #tls_key: "{{ ssl_key_slurp_path }}"
       insecure_skip_verify: "{{ telegraf_influxdb2_insecure_skip_verify }}"
 
 # Base telegraf configuration override
@@ -122,8 +128,6 @@ telegraf_plugins_base:
     options:
       percpu: "true"
       totalcpu: "true"
-      fielddrop:
-        - time_*
   - name: mem
   - name: net
   - name: nstat

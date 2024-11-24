@@ -4,4 +4,4 @@ venv/
 .vagrant/
 *deb
 *rpm
-playbooks/
+vars/infisical.yml
