@@ -9,15 +9,21 @@
     baseurl: "{{ telegraf_influxdata_base_url }}/rhel/$releasever/$basearch/stable"
     name: influxdb
     description: InfluxDB Repository
-    gpgkey: "{{ telegraf_influxdata_base_url }}/influxdb.key"
+    gpgkey: "{{ telegraf_influxdata_base_url }}/influxdata-archive_compat.key"
   when: telegraf_rpm_pkg_url is not defined or telegraf_rpm_pkg_url == None
+
+- name: install-redhat | verify influxdata key
+  ansible.builtin.rpm_key:
+    state: present
+    #key: "{{ telegraf_influxdata_base_url }}/influxdata-archive.key"
+    key: "{{ telegraf_influxdata_base_url }}/influxdata-archive_compat.key"
 
 - name: install-redhat | Install Telegraf packages [RHEL/CentOS]
   ansible.builtin.dnf:
     name: telegraf
     state: latest
     update_cache: true
-    update_only: true
+    update_only: false # true
   register: telegraf_pkg_install
   until: telegraf_pkg_install is not failed
   when: telegraf_rpm_pkg_url is not defined or telegraf_rpm_pkg_url == None
